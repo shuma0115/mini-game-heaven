@@ -1,29 +1,26 @@
-
-# Lotto Number Generator
+# Project: Gomoku Game
 
 ## Overview
 
-A simple web application that generates six unique random lotto numbers between 1 and 45 when a button is clicked. The application is built using modern web standards, including a Web Component for the number generator.
+This project is a web-based Gomoku (Omok) game with Renju rules, implemented in a single `index.html` file. The game features a canvas-based board, sound effects, and Korean language support.
 
-## Design and Features
+## Features
 
-*   **Layout:** A centered layout with a title, a "Generate Numbers" button, and a container to display the generated lotto numbers.
-*   **Styling:**
-    *   Clean and modern design with a light gray background.
-    *   The "Generate Numbers" button has a green background, rounded corners, and a subtle shadow. It also has a hover effect.
-    *   The generated lotto numbers are displayed in colorful, circular "lotto balls" with a shadow effect.
-*   **Functionality:**
-    *   Clicking the "Generate Numbers" button generates six unique random numbers from 1 to 45.
-    *   The generated numbers are displayed in ascending order.
-    *   The lotto number generator is encapsulated as a Web Component (`<lotto-generator>`), making it reusable and self-contained.
+- **Gomoku Game Logic:** Players can place stones on a 15x15 board.
+- **Renju Rules:**
+    - The game checks for a line of five stones to determine the winner.
+    - **Overline Rule:** The "overline" rule for Black (six or more stones in a row results in a loss) is implemented.
+    - **3x3 and 4x4 Rules:** An implementation for detecting double threes and double fours for the black player is in place. However, a full and accurate implementation of these Renju rules is highly complex and requires sophisticated pattern matching. The current implementation is an improvement but may not cover all edge cases perfectly.
+- **Sound Effects:** The Web Audio API is used to generate and play sounds for:
+    - Placing a stone.
+    - Winning the game.
+    - Losing the game.
+- **UI:**
+    - The game board is rendered on an HTML5 canvas.
+    - A status display shows whose turn it is and the game result.
+    - A "New Game" button allows players to reset the board.
+- **Language:** All in-game text is in Korean.
 
-## Current Task
+## File Structure
 
-Create the initial version of the Lotto Number Generator application.
-
-### Steps
-
-1.  **DONE:** Create `index.html` with the basic HTML structure, including the `<lotto-generator>` custom element.
-2.  **DONE:** Create `style.css` for the overall page styling.
-3.  **DONE:** Create `main.js` to define the `LottoGenerator` Web Component, including its structure, styling, and functionality.
-4.  **DONE:** Create `blueprint.md` to document the project.
+- **`index.html`**: Contains the entire application, including HTML structure, CSS for styling, and JavaScript for game logic and sound effects.
