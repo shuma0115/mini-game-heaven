@@ -290,7 +290,38 @@ canvas{
 .moves li{margin:6px 0}
 .small{font-size:12px; color:var(--muted); line-height:1.55}
 
-footer{margin-top:18px; color:var(--muted); font-size:12px; text-align:center; opacity:.9;}
+.site-footer{
+  margin-top:18px;
+  color:var(--muted);
+  font-size:12px;
+  text-align:center;
+  opacity:.95;
+}
+.footer-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  justify-content:center;
+  margin-bottom:10px;
+}
+.footer-links a{
+  color:var(--muted);
+  text-decoration:none;
+  border:1px solid var(--line);
+  padding:6px 10px;
+  border-radius:999px;
+  background:var(--chip);
+  font-size:12px;
+}
+.footer-links a:hover{color:var(--text); background:var(--chip2);}
+.info-list{
+  margin:0;
+  padding-left:18px;
+  color:var(--muted);
+  line-height:1.6;
+  font-size:13px;
+}
+.section{margin-top:16px;}
 
 /* LOTTO */
 .lotto-shell{

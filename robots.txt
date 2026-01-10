@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://shuma0115.github.io/mini-game-heaven/sitemap.xml
