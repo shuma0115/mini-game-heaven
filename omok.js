@@ -1,4 +1,3 @@
-/* omok.js */
 initHeader("오목");
 
 const OMOK_LEVEL_KEY = "omok_ai_level_v1";
@@ -210,6 +209,109 @@ function checkWinFrom(x, y, player){
   return false;
 }
 
+
+/***********************
+ * RENJU RULE (흑 금수)
+ * - 흑(선공)은 33, 44, 장목(6목 이상) 금지
+ * - 단, 정확히 5목(오목) 완성은 승리로 인정
+ ************************/
+function maxLineLenFrom(x, y, player){
+  const dirs = [{dx:1,dy:0},{dx:0,dy:1},{dx:1,dy:1},{dx:1,dy:-1}];
+  let best = 1;
+  for(const d of dirs){
+    let count = 1;
+    let nx = x + d.dx, ny = y + d.dy;
+    while(inside(nx,ny) && board[ny][nx] === player){ count++; nx+=d.dx; ny+=d.dy; }
+    nx = x - d.dx; ny = y - d.dy;
+    while(inside(nx,ny) && board[ny][nx] === player){ count++; nx-=d.dx; ny-=d.dy; }
+    if(count > best) best = count;
+  }
+  return best;
+}
+
+function lineString9(x, y, dx, dy){
+  // -4..+4 총 9칸 (가운데가 index 4)
+  let s = "";
+  for(let i=-4;i<=4;i++){
+    const nx = x + dx*i, ny = y + dy*i;
+    if(!inside(nx,ny)){ s += "2"; continue; } // 바깥은 막힘 처리
+    const v = board[ny][nx];
+    s += (v === EMPTY) ? "0" : (v === BLACK ? "1" : "2");
+  }
+  return s;
+}
+
+function countMatchesIncludingCenter(line, patterns){
+  const center = 4;
+  let cnt = 0;
+  for(const pat of patterns){
+    const L = pat.length;
+    for(let start=0; start<=line.length-L; start++){
+      if(line.substr(start, L) !== pat) continue;
+      if(start <= center && center < start + L) cnt++;
+    }
+  }
+  return cnt;
+}
+
+function renjuJudgeBlackMove(x, y){
+  // 반환: { forbidden, reason, winExact5 }
+  if(!inside(x,y)) return { forbidden:true, reason:"범위 밖", winExact5:false };
+  if(board[y][x] !== EMPTY) return { forbidden:true, reason:"이미 돌이 있음", winExact5:false };
+
+  // 가상 착수
+  board[y][x] = BLACK;
+
+  const maxLen = maxLineLenFrom(x, y, BLACK);
+  const winExact5 = (maxLen === 5);
+  const overline = (maxLen >= 6);
+
+  // 정확히 5목이면 승리(금수 적용 안함)
+  if(winExact5){
+    board[y][x] = EMPTY;
+    return { forbidden:false, reason:"", winExact5:true };
+  }
+
+  // 6목 이상은 장목(금수)
+  if(overline){
+    board[y][x] = EMPTY;
+    return { forbidden:true, reason:"장목(6목 이상)", winExact5:false };
+  }
+
+  const dirs = [{dx:1,dy:0},{dx:0,dy:1},{dx:1,dy:1},{dx:1,dy:-1}];
+  const openThreePatterns = [
+    "01110",
+    "010110",
+    "011010"
+  ];
+  const openFourPatterns = [
+    "011110",
+    "0101110",
+    "0110110",
+    "0111010"
+  ];
+
+  let openThrees = 0;
+  let openFours = 0;
+
+  for(const d of dirs){
+    const line = lineString9(x, y, d.dx, d.dy);
+    openThrees += countMatchesIncludingCenter(line, openThreePatterns);
+    openFours  += countMatchesIncludingCenter(line, openFourPatterns);
+  }
+
+  board[y][x] = EMPTY;
+
+  if(openFours >= 2){
+    return { forbidden:true, reason:"44(사사)", winExact5:false };
+  }
+  if(openThrees >= 2){
+    return { forbidden:true, reason:"33(삼삼)", winExact5:false };
+  }
+  return { forbidden:false, reason:"", winExact5:false };
+}
+
+
 function isBoardFull(){
   for(let y=0;y<SIZE;y++) for(let x=0;x<SIZE;x++) if(board[y][x] === EMPTY) return false;
   return true;
@@ -385,13 +487,22 @@ async function userPlace(x,y){
   if(aiBusy) return;
   if(turn !== BLACK) return;
 
+  // RENJU: 흑 금수(33/44/장목) 판정
+  const rj = renjuJudgeBlackMove(x, y);
+  if(rj.forbidden){
+    omokStatus.textContent = `금수입니다 (${rj.reason})`;
+    setTimeout(() => { if(!gameOver) omokStatus.textContent = ""; }, 900);
+    return;
+  }
+
   const ok = placeStoneCore(x,y,BLACK,true);
   if(!ok) return;
 
-  if(checkWinFrom(x,y,BLACK)){
+  if(rj.winExact5){
     await endGame(BLACK);
     return;
   }
+
   if(isBoardFull()){
     omokStatus.textContent = "무승부";
     gameOver = true;

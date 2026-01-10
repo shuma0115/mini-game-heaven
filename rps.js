@@ -1,4 +1,3 @@
-/* rps.js */
 initHeader("가위바위보");
 
 const RPS_KEY = 'mini_rps_v2';

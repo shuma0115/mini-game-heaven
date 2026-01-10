@@ -1,4 +1,3 @@
-/* lotto.js */
 initHeader("로또");
 
 const lottoSetsEl = document.getElementById("lottoSets");
@@ -144,7 +143,6 @@ lottoBtnReset.addEventListener("click", () => {
   setToast("");
 });
 
-/* History */
 const STORAGE_KEY = "lotto_history_v1";
 renderHistory();
 
@@ -261,5 +259,4 @@ function renderHistory() {
   });
 }
 
-/* 초기 화면 */
 renderPlaceholders();

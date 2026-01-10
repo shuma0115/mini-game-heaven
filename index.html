@@ -1,13 +1,93 @@
 <!doctype html>
 <html lang="ko" data-theme="dark">
-<head> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, initial-scale=1" /> <title>미니게임 천국 | 메인</title> <link rel="stylesheet" href="style.css">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>미니게임 천국 | 메인</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body> <div class="wrap"> <header> <div class="brand"> <div class="title">미니게임 천국</div> <div class="sub">미니게임 · 메인 페이지에서 게임을 선택하면 서브 페이지로 이동합니다.</div> </div> <div class="top-controls"> <div class="pill">현재: <b id="routeName">메인</b></div> <label class="toggle" title="효과음 ON/OFF"> <input id="sfxToggle" type="checkbox" checked> SFX </label> <div class="range" title="효과음 볼륨"> 볼륨 <input id="sfxVol" type="range" min="0" max="100" value="70"> </div> <button class="btn ghost" id="themeToggle" type="button" data-theme-toggle>🌙 다크모드</button> </div> </header> <section aria-label="메인"> <div class="grid"> <div class="card"> <div class="hd"> <div> <h2>게임 선택</h2> <p>누구나 한 번쯤 해봤던 대표적인 미니게임을 모아 놓았습니다.</p> </div> <span class="tag">멀티 페이지</span> </div> <div class="bd"> <div class="btnrow"> <a class="btn primary" href="rps.html">✌️ 가위바위보</a> <a class="btn primary" href="omok.html">⚫ 오목</a> <a class="btn primary" href="lotto.html">🎲 로또 추첨기</a> 
-              <button class="btn primary" onclick="location.href='menu.html'">🍽️ 오늘 뭐 먹지</button>
-            </div> <div class="hr"></div> <div class="notice"> • 각 게임 페이지에서 <span class="kbd">ESC</span>를 누르면 메인으로 돌아옵니다. </div> </div> </div> <div class="card"> <div class="hd"> <div> <h2>조작 안내</h2> <p>각 게임의 기본 규칙과 승리 조건을 확인할 수 있습니다.</p> </div> </div> <div class="bd"> <div class="panel"> <div style="font-weight:800; margin-bottom:6px;">가위바위보
-<div class="hr"></div>
-<div style="font-weight:800; margin-bottom:6px;">오늘 뭐 먹지</div>
-<div class="small">랜덤으로 식사 메뉴 1가지를 추천해주는 간단한 게임입니다.</div>
-            </div> <div class="small">내가 선택 → 상대가 2초간 빠르게 가위/바위/보 변경 → 최종 선택 & 결과 사운드</div> <div class="hr"></div> <div style="font-weight:800; margin-bottom:6px;">오목</div> <div class="small">내가 흑(선) / AI가 백(후) 자동 착수. 쉬움/보통/어려움 선택 가능</div> <div class="hr"></div> <div style="font-weight:800; margin-bottom:6px;">로또</div> <div class="small">순차 공개 + 효과음 + 기록 저장/복사</div> </div> </div> </div> </div> </section> <footer>© Mini Games</footer> </div> <script src="shared.js"></script> <script> initHeader("메인"); // 메인에서는 별도 로직 없음 </script>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="title">미니게임 천국</div>
+        <div class="sub">미니게임 천국</div>
+      </div>
+
+      <div class="top-controls">
+        <div class="pill">현재: <b id="routeName">메인</b></div>
+
+        <label class="toggle" title="효과음 ON/OFF">
+          <input id="sfxToggle" type="checkbox" checked>
+          SFX
+        </label>
+
+        <div class="range" title="효과음 볼륨">
+          볼륨
+          <input id="sfxVol" type="range" min="0" max="100" value="70">
+        </div>
+
+        <button class="btn ghost" id="themeToggle" type="button">🌙 다크모드</button>
+      </div>
+    </header>
+
+    <section class="grid" aria-label="메인">
+      <div class="card">
+        <div class="hd">
+          <div>
+            <h2>게임 선택</h2>
+            <p>원하는 미니게임을 골라 플레이하세요.</p>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="btnrow">
+            <a class="btn primary" href="rps.html">✌️ 가위바위보</a>
+            <a class="btn primary" href="omok.html">⚫ 오목</a>
+            <a class="btn primary" href="lotto.html">🎲 로또 추첨기</a>
+            <a class="btn primary" href="menu.html">🍽️ 오늘 뭐 먹지</a>
+          </div>
+          <div class="hr"></div>
+          <div class="notice">각 게임은 별도 페이지에서 실행됩니다.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hd">
+          <div>
+            <h2>게임 설명</h2>
+            <p>각 게임의 기본 규칙과 승리 조건을 확인하세요.</p>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="panel">
+            <div style="font-weight:800; margin-bottom:6px;">가위바위보</div>
+            <div class="small">가위·바위·보 중 하나를 선택해 상대와 승부를 겨루는 게임입니다. 같은 선택이면 무승부, 상대의 선택을 이기면 승리합니다.</div>
+
+            <div class="hr"></div>
+
+            <div style="font-weight:800; margin-bottom:6px;">오목</div>
+            <div class="small">바둑판 위에 돌을 번갈아 놓아 가로·세로·대각선으로 다섯 개의 돌을 먼저 연결하면 승리하는 게임입니다.</div>
+
+            <div class="hr"></div>
+
+            <div style="font-weight:800; margin-bottom:6px;">로또 추첨기</div>
+            <div class="small">1부터 45까지의 숫자 중 중복 없이 6개의 번호를 무작위로 추첨하는 방식의 번호 추천 게임입니다.</div>
+
+            <div class="hr"></div>
+
+            <div style="font-weight:800; margin-bottom:6px;">오늘 뭐 먹지</div>
+            <div class="small">버튼을 누르면 점심·저녁 식사 메뉴를 무작위로 추천해주는 간단한 게임입니다.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>© Mini Games</footer>
+  </div>
+
+  <script src="shared.js"></script>
+  <script>
+    initHeader("메인");
+  </script>
 </body>
 </html>

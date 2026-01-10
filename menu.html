@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>미니게임 천국 - 오늘 뭐 먹지</title>
+  <title>미니게임 천국 | 오늘 뭐 먹지</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,7 +14,7 @@
         <div class="sub">점심·저녁 메뉴를 랜덤으로 추천합니다.</div>
       </div>
       <div class="top-controls">
-    <div class="pill">현재: <b>오늘 뭐 먹지</b></div>
+    <div class="pill">현재: <b id="routeName">오늘 뭐 먹지</b></div>
 
     <label class="toggle" title="효과음 ON/OFF">
       <input id="sfxToggle" type="checkbox" checked>
@@ -51,7 +51,9 @@
 
   <script src="shared.js"></script>
 <script>
-  // 메뉴 목록(필요하면 자유롭게 추가/수정)
+  initHeader("오늘 뭐 먹지");
+
+    // 메뉴 목록(필요하면 자유롭게 추가/수정)
   const menus = [
     "김치찌개","된장찌개","순두부찌개","불고기","제육볶음","비빔밥","삼겹살",
     "돈까스","치킨","피자","햄버거","라면","짬뽕","짜장면","마라탕",

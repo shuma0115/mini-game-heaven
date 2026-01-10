@@ -3,7 +3,7 @@
 ## 파일 구성
 - index.html : 메인 페이지(게임 선택)
 - rps.html / rps.js : 가위바위보
-- omok.html / omok.js : 오목(난이도)
+- omok.html / omok.js : 오목
 - lotto.html / lotto.js : 로또 추첨기
 - style.css : 공용 스타일
 - shared.js : 테마/효과음/오디오 엔진 공용

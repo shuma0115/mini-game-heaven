@@ -1,5 +1,3 @@
-/* shared.js: Theme + Global SFX + Audio utilities (멀티페이지 공용) */
-
 const THEME_KEY = "theme";
 const SFX_ON_KEY = "mini_sfx_on_v1";
 const SFX_VOL_KEY = "mini_sfx_vol_v1";
@@ -44,7 +42,6 @@ function toggleTheme(){
   applyTheme(current === "dark" ? "light" : "dark");
 }
 
-/* header init: 페이지별 route 이름과 버튼들을 연결 */
 function initHeader(routeName){
   const routeNameEl = document.getElementById("routeName");
   if(routeNameEl) routeNameEl.textContent = routeName;
@@ -76,9 +73,6 @@ function initHeader(routeName){
   }
 }
 
-/***********************
- * SFX (공용)
- ************************/
 function sfxRpsStart(){
   const ctx = getAudioCtx(); if(!ctx) return;
   if (ctx.state === "suspended") ctx.resume().catch(()=>{});
@@ -224,7 +218,6 @@ function sfxStonePlace(){
   master.gain.linearRampToValueAtTime(0.0001, t+0.22);
 }
 
-/* LOTTO SFX */
 function startRollingSound(durationSec = 5.0, volumeBase = 0.32) {
   const ctx = getAudioCtx();
   if (!ctx) return null;
@@ -392,7 +385,6 @@ function playFinishChime() {
   ding(1318.5, t + 0.08, 0.22);
 }
 
-/* 유틸 */
 function escapeHtml(str) {
   return String(str)
     .replaceAll("&", "&amp;")
@@ -406,10 +398,8 @@ function cryptoRandomId() {
   return "id_" + Math.random().toString(16).slice(2) + "_" + Date.now(); // 확실한게 아니야
 }
 
-/* 공용 단축키: ESC -> index */
 window.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
-    // 같은 폴더 기준
     window.location.href = "index.html";
   }
 });
