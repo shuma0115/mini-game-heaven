@@ -1,30 +1,91 @@
-<!DOCTYPE html>
-<html lang="ko">
+<!doctype html>
+<html lang="ko" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>가위바위보</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>미니게임 천국 | 가위바위보</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="wrap">
     <header>
-        <h1>가위바위보</h1>
-        <nav>
-            <a href="index.html">홈으로</a>
-        </nav>
-    </header>
-    <main>
-        <div id="game">
-            <div id="player-choice"></div>
-            <div id="computer-choice"></div>
-            <div id="result"></div>
-            <div id="buttons">
-                <button id="rock">바위</button>
-                <button id="scissors">가위</button>
-                <button id="paper">보</button>
-            </div>
+      <div class="brand">
+        <div class="title">미니게임</div>
+        <div class="sub">가위바위보</div>
+      </div>
+
+      <div class="top-controls">
+        <div class="pill">현재: <b id="routeName">가위바위보</b></div>
+
+        <label class="toggle" title="효과음 ON/OFF">
+          <input id="sfxToggle" type="checkbox" checked>
+          SFX
+        </label>
+
+        <div class="range" title="효과음 볼륨">
+          볼륨
+          <input id="sfxVol" type="range" min="0" max="100" value="70">
         </div>
-    </main>
-    <script src="rps.js"></script>
+
+        <button class="btn ghost" id="themeToggle" type="button" data-theme-toggle>🌙 다크모드</button>
+      </div>
+    </header>
+
+    <section aria-label="가위바위보">
+      <div class="card">
+        <div class="hd">
+          <div>
+            <h2>가위바위보</h2>
+            <p>가위, 바위, 보 중 하나를 선택해 상대와 승부를 겨루는 게임입니다. 같은 선택이면 무승부, 상대의 선택을 이기면 승리합니다.</p>
+          </div>
+          <div class="split">
+            <a class="btn ghost" href="index.html">← 메인으로</a>
+            <button class="btn danger" id="rpsReset">기록 초기화</button>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="btnrow" style="margin-bottom:12px;">
+            <button class="btn primary" data-rps="scissors">가위 ✌️</button>
+            <button class="btn primary" data-rps="rock">바위 ✊</button>
+            <button class="btn primary" data-rps="paper">보 🖐️</button>
+          </div>
+
+          <div class="rps-area">
+            <div class="rps-box">
+              <div class="rps-label">내 선택</div>
+              <div class="rps-choice" id="myChoice">—</div>
+              <div class="rps-label">상대</div>
+              <div class="rps-choice" id="cpuChoice">—</div>
+              <div class="result" id="rpsResult">선택해 주세요.</div>
+
+              <div class="score">
+                <div class="stat">승: <b id="win">0</b></div>
+                <div class="stat">무: <b id="draw">0</b></div>
+                <div class="stat">패: <b id="lose">0</b></div>
+              </div>
+              <div class="small" style="margin-top:10px;">
+                팁: <span class="kbd">R</span> 기록 초기화 / <span class="kbd">ESC</span> 메인
+              </div>
+            </div>
+
+            <div class="rps-box">
+              <div class="rps-label" style="margin-bottom:8px;">승부 기록</div>
+              <div class="history">
+                <ul id="histList"></ul>
+              </div>
+              <div class="small" style="margin-top:10px;">
+                기록은 로컬스토리지에 저장됩니다.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>© Mini Games</footer>
+  </div>
+
+  <script src="shared.js"></script>
+  <script src="rps.js"></script>
 </body>
 </html>

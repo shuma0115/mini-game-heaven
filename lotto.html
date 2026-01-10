@@ -1,24 +1,93 @@
-<!DOCTYPE html>
-<html lang="ko">
+<!doctype html>
+<html lang="ko" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로또 번호 추첨기</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>미니게임 천국 | 로또</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="wrap">
     <header>
-        <h1>로또 번호 추첨기</h1>
-        <nav>
-            <a href="index.html">홈으로</a>
-        </nav>
-    </header>
-    <main>
-        <div id="lotto-machine">
-            <div id="lotto-numbers"></div>
-            <button id="draw-button">추첨</button>
+      <div class="brand">
+        <div class="title">미니게임</div>
+        <div class="sub">로또 번호 추첨기</div>
+      </div>
+
+      <div class="top-controls">
+        <div class="pill">현재: <b id="routeName">로또</b></div>
+
+        <label class="toggle" title="효과음 ON/OFF">
+          <input id="sfxToggle" type="checkbox" checked>
+          SFX
+        </label>
+
+        <div class="range" title="효과음 볼륨">
+          볼륨
+          <input id="sfxVol" type="range" min="0" max="100" value="70">
         </div>
-    </main>
-    <script src="lotto.js"></script>
+
+        <button class="btn ghost" id="themeToggle" type="button" data-theme-toggle>🌙 다크모드</button>
+      </div>
+    </header>
+
+    <section aria-label="로또 추첨기">
+      <div class="card">
+        <div class="hd">
+          <div>
+            <h2>로또 번호 추첨기</h2>
+            <p>1부터 45까지의 숫자 중 중복 없이 6개의 번호를 무작위로 추첨하는 게임입니다.</p>
+          </div>
+          <div class="split">
+            <a class="btn ghost" href="index.html">← 메인으로</a>
+</div>
+        </div>
+
+        <div class="bd">
+          <div class="lotto-shell">
+            <p class="lotto-desc">추첨 버튼을 누르면 여러 세트의 로또 번호가 자동으로 생성됩니다.</p>
+
+            <div class="lotto-grid">
+              <section class="lotto-panel" aria-label="현재 추천 번호">
+                <div class="lotto-sets" id="lottoSets"></div>
+
+                <div class="lotto-actions">
+                  <button class="lotto-btn" id="lottoBtnPick" type="button">🎲 5세트 추천하기</button>
+                  <button class="lotto-btn secondary" id="lottoBtnCopy" type="button" disabled>📋 현재 결과 복사</button>
+                  <button class="lotto-btn secondary" id="lottoBtnReset" type="button">현재 화면 초기화</button>
+                </div>
+
+                <div class="lotto-meta" id="lottoMeta">아직 생성되지 않았습니다.</div>
+                <div class="lotto-toast" id="lottoToast" role="status" aria-live="polite"></div>
+              </section>
+
+              <aside class="lotto-panel" aria-label="생성 기록">
+                <div class="lotto-history-head">
+                  <h3 class="lotto-history-title">생성 기록</h3>
+                  <div class="lotto-history-actions">
+                    <button class="lotto-btn secondary" id="lottoBtnCopyHistory" type="button" disabled>📋 기록 전체 복사</button>
+                    <button class="lotto-btn secondary" id="lottoBtnClearHistory" type="button" disabled>🧹 기록 전체 삭제</button>
+                  </div>
+                </div>
+
+                <div class="lotto-history-list" id="lottoHistoryList"></div>
+
+                <div class="lotto-hint">
+                  • 기록은 브라우저 로컬스토리지에 저장됩니다.<br/>
+                  • “기록 전체 삭제”는 되돌릴 수 없습니다.<br/>
+                  • <span class="kbd">ESC</span> 메인
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>© Mini Games</footer>
+  </div>
+
+  <script src="shared.js"></script>
+  <script src="lotto.js"></script>
 </body>
 </html>

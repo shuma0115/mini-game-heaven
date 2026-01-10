@@ -1,21 +1,98 @@
-<!DOCTYPE html>
-<html lang="ko">
+<!doctype html>
+<html lang="ko" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>오목</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>미니게임 천국 | 오목</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="wrap">
     <header>
-        <h1>오목</h1>
-        <nav>
-            <a href="index.html">홈으로</a>
-        </nav>
+      <div class="brand">
+        <div class="title">미니게임</div>
+        <div class="sub">오목(</div>
+      </div>
+
+      <div class="top-controls">
+        <div class="pill">현재: <b id="routeName">오목</b></div>
+
+        <label class="toggle" title="효과음 ON/OFF">
+          <input id="sfxToggle" type="checkbox" checked>
+          SFX
+        </label>
+
+        <div class="range" title="효과음 볼륨">
+          볼륨
+          <input id="sfxVol" type="range" min="0" max="100" value="70">
+        </div>
+
+        <button class="btn ghost" id="themeToggle" type="button" data-theme-toggle>🌙 다크모드</button>
+      </div>
     </header>
-    <main>
-        <div id="game-board"></div>
-    </main>
-    <script src="omok.js"></script>
+
+    <section aria-label="오목 난이도">
+      <div class="card">
+        <div class="hd">
+          <div>
+            <h2>오목(</h2>
+            <p>바둑판 위에 번갈아 돌을 놓아 가로, 세로, 대각선으로 다섯 개의 돌을 먼저 연결하면 승리하는 게임입니다.</p>
+          </div>
+          <div class="split">
+            <a class="btn ghost" href="index.html">← 메인으로</a>
+
+            <span class="tag">
+              난이도:
+              <select id="aiLevel" style="margin-left:8px; padding:6px 10px; border-radius:10px; border:1px solid var(--line); background:var(--chip); color:var(--text);">
+                <option value="easy">쉬움</option>
+                <option value="normal" selected>보통</option>
+                <option value="hard">어려움</option>
+              </select>
+            </span>
+
+            <button class="btn" id="omokUndo">되돌리기</button>
+            <button class="btn danger" id="omokReset">새 게임</button>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="omok-wrap">
+            <div class="board-shell">
+              <div class="board-top">
+                <div>
+                  <span class="turn-dot black" id="turnDot"></span>
+                  <span style="font-weight:900" id="turnText">내 차례(흑)</span>
+                  <span class="muted" id="omokStatus" style="margin-left:10px;"></span>
+                </div>
+                <span class="tag">15×15</span>
+              </div>
+
+              <div class="board">
+                <div class="canvas-wrap" id="omokCanvasWrap">
+                  <canvas id="omokCanvas" aria-label="오목판"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div style="font-weight:900; margin-bottom:8px;">착수 기록</div>
+              <div class="moves">
+                <ol id="moveList"></ol>
+              </div>
+              <div class="hr"></div>
+              <div class="small">
+                • 난이도는 즉시 적용됩니다(다음 AI 착수부터).<br>
+                • <span class="kbd">U</span>: 되돌리기 / <span class="kbd">N</span>: 새 게임 / <span class="kbd">ESC</span>: 메인
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>© Mini Games</footer>
+  </div>
+
+  <script src="shared.js"></script>
+  <script src="omok.js"></script>
 </body>
 </html>
