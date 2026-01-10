@@ -1,13 +1,2056 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ko" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>미니게임 | 가위바위보 · 오목(난이도) · 로또</title>
+
+  <style>
+    html[data-theme="dark"]{
+      --bg:#0b0f19;
+      --panel:#121a2a;
+      --panel2:#0f1626;
+      --text:#eaf0ff;
+      --muted:#a8b3d6;
+      --accent:#7aa2ff;
+      --good:#4ade80;
+      --bad:#fb7185;
+      --warn:#fbbf24;
+      --line:rgba(255,255,255,.10);
+      --shadow:0 12px 30px rgba(0,0,0,.35);
+      --radius:18px;
+      --chip: rgba(255,255,255,.06);
+      --chip2: rgba(255,255,255,.10);
+
+      --l-bg: #0b1020;
+      --l-card: rgba(255,255,255,0.06);
+      --l-card2: rgba(255,255,255,0.10);
+      --l-card3: rgba(255,255,255,0.14);
+      --l-text: #ffffff;
+      --l-text-muted: rgba(255,255,255,0.7);
+      --l-ball-bg: #ffffff;
+      --l-ball-text: #0b1020;
+      --l-btn-bg: #ffffff;
+      --l-btn-text: #0b1020;
+      --l-border: rgba(255,255,255,0.12);
+    }
+    html[data-theme="light"]{
+      --bg:#f5f6fa;
+      --panel:#ffffff;
+      --panel2:#f0f2f7;
+      --text:#0b1020;
+      --muted:#5b647a;
+      --accent:#2f63ff;
+      --good:#16a34a;
+      --bad:#e11d48;
+      --warn:#d97706;
+      --line:rgba(0,0,0,.10);
+      --shadow:0 12px 30px rgba(0,0,0,.12);
+      --radius:18px;
+      --chip: rgba(0,0,0,.04);
+      --chip2: rgba(0,0,0,.08);
+
+      --l-bg: #f5f6fa;
+      --l-card: #ffffff;
+      --l-card2: #f0f0f0;
+      --l-card3: #e6e6e6;
+      --l-text: #111111;
+      --l-text-muted: #555555;
+      --l-ball-bg: #0b1020;
+      --l-ball-text: #ffffff;
+      --l-btn-bg: #0b1020;
+      --l-btn-text: #ffffff;
+      --l-border: rgba(0,0,0,0.10);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
+      background: radial-gradient(1200px 700px at 20% 0%, rgba(122,162,255,.20), transparent 55%),
+                  radial-gradient(1000px 600px at 90% 10%, rgba(251,191,36,.14), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+      transition: background .25s, color .25s;
+    }
+
+    .wrap{max-width:1100px; margin:0 auto; padding:28px 18px 40px;}
+    header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px; flex-wrap:wrap;}
+    .brand{display:flex; flex-direction:column; gap:4px;}
+    .brand .title{font-size:20px; font-weight:800; letter-spacing:.2px;}
+    .brand .sub{font-size:13px; color:var(--muted);}
+
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      background:var(--chip);
+      border-radius:999px;
+      box-shadow:0 10px 18px rgba(0,0,0,.12);
+      font-size:13px;
+      color:var(--muted);
+      user-select:none;
+    }
+    .pill b{color:var(--text)}
+
+    .grid{display:grid; grid-template-columns: 1.1fr .9fr; gap:16px;}
+    @media (max-width: 920px){ .grid{grid-template-columns:1fr} }
+
+    .card{
+      background: linear-gradient(180deg, var(--chip2), var(--chip));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .hd{
+      padding:16px 16px 12px;
+      border-bottom:1px solid var(--line);
+      display:flex; align-items:flex-start; justify-content:space-between;
+      gap:12px; flex-wrap:wrap;
+    }
+    .card .hd h2{margin:0; font-size:16px; letter-spacing:.2px;}
+    .card .hd p{margin:6px 0 0; font-size:13px; color:var(--muted); line-height:1.45;}
+    .card .bd{padding:16px}
+
+    .btnrow{display:flex; gap:10px; flex-wrap:wrap}
+    .btn{
+      border:1px solid var(--line);
+      background:var(--chip);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      user-select:none;
+      transition: transform .06s ease, background .2s ease, border-color .2s ease, opacity .2s ease;
+      font-weight:700;
+      font-size:14px;
+      white-space:nowrap;
+    }
+    .btn:hover{background:var(--chip2)}
+    .btn:active{transform: translateY(1px)}
+    .btn.primary{background:rgba(122,162,255,.18); border-color: rgba(122,162,255,.35);}
+    .btn.danger{background:rgba(251,113,133,.12); border-color: rgba(251,113,133,.28);}
+    .btn.ghost{background:transparent;}
+    .btn:disabled{opacity:.55; cursor:not-allowed;}
+
+    .tag{
+      font-size:12px; color:var(--muted);
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:6px 10px;
+      background:var(--chip);
+      white-space:nowrap;
+    }
+
+    .split{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+    .hr{height:1px; background:var(--line); margin:14px 0}
+    .notice{font-size:13px; color:var(--muted); line-height:1.5;}
+    .kbd{
+      display:inline-block;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size:12px;
+      padding:2px 7px;
+      border-radius:8px;
+      border:1px solid var(--line);
+      background:var(--chip);
+      color:var(--text);
+    }
+
+    .view{display:none}
+    .view.active{display:block}
+
+    .top-controls{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+      justify-content:flex-end;
+    }
+    .toggle{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:var(--chip);
+      cursor:pointer;
+      user-select:none;
+      font-weight:800;
+      font-size:13px;
+      color:var(--text);
+    }
+    .toggle input{ accent-color: var(--accent); }
+    .range{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:var(--chip);
+      font-size:13px;
+      color:var(--muted);
+    }
+    .range input{ width:120px; }
+
+    /* RPS */
+    .rps-area{display:grid; grid-template-columns: 1fr 1fr; gap:12px;}
+    @media (max-width: 720px){ .rps-area{grid-template-columns:1fr} }
+    .rps-box{
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:var(--chip);
+      padding:14px;
+    }
+    .rps-choice{font-size:34px; margin:8px 0 4px;}
+    .rps-label{font-size:12px; color:var(--muted)}
+    .score{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;}
+    .stat{
+      padding:10px 12px;
+      border-radius:12px;
+      background:var(--chip);
+      border:1px solid var(--line);
+      font-size:13px;
+    }
+    .stat b{font-size:14px}
+    .result{font-weight:900; font-size:18px; margin:10px 0 0;}
+    .result.win{color:var(--good)}
+    .result.lose{color:var(--bad)}
+    .result.draw{color:var(--warn)}
+    .history{
+      max-height:240px;
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:var(--chip);
+      padding:10px;
+      font-size:13px;
+    }
+    .history ul{margin:0; padding-left:18px}
+    .history li{margin:6px 0; color:var(--muted)}
+
+    /* OMOK */
+    .omok-wrap{display:grid; grid-template-columns: 1fr .95fr; gap:12px; align-items:start;}
+    @media (max-width: 980px){ .omok-wrap{grid-template-columns:1fr} }
+
+    .board-shell{
+      border:1px solid var(--line);
+      border-radius:16px;
+      background: var(--chip);
+      /* ✅ 잘림 증상 원인: 부모가 overflow:hidden + 자식이 컨테이너보다 커지면 잘림
+         -> 해결: 자식이 절대 컨테이너를 넘지 않도록(width:100%) 구성 + 필요시 visible */
+      overflow: visible;
+    }
+    .board-top{
+      padding:12px 14px;
+      display:flex; justify-content:space-between; align-items:center;
+      border-bottom:1px solid var(--line);
+      gap:10px; flex-wrap:wrap;
+    }
+    .turn-dot{
+      width:12px; height:12px; border-radius:50%;
+      display:inline-block;
+      border:1px solid rgba(255,255,255,.35);
+      margin-right:8px;
+      vertical-align:middle;
+    }
+    html[data-theme="light"] .turn-dot{border-color: rgba(0,0,0,.25);}
+    .turn-dot.black{background:#111}
+    .turn-dot.white{background:#f3f4f6}
+
+    /* ✅ 바둑판 잘림 핵심 수정
+       - 이전 코드의 width:min(96vw,720px)는 "부모 컬럼 폭보다 커질 수 있음" → overflow로 잘림
+       - 해결: 100%로 부모 안에만 들어가게 + max-width 제한 */
+    .board{
+      display:grid;
+      place-items:center;
+      padding:12px;
+    }
+    .canvas-wrap{
+      width: 100%;
+      max-width: 720px;
+      aspect-ratio: 1 / 1;
+      position: relative;
+      /* 컨테이너 안에서 절대 넘치지 않도록 */
+      overflow: visible;
+    }
+    canvas{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      display:block;
+      background: linear-gradient(180deg, rgba(194, 140, 72, .26), rgba(194, 140, 72, .20));
+      border-radius:12px;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.18);
+      touch-action: manipulation;
+      cursor:pointer;
+    }
+
+    .panel{
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:var(--chip);
+      padding:14px;
+    }
+    .moves{
+      max-height:280px;
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:var(--chip);
+      padding:10px;
+      font-size:13px;
+      color:var(--muted);
+    }
+    .moves ol{margin:0; padding-left:18px}
+    .moves li{margin:6px 0}
+    .small{font-size:12px; color:var(--muted); line-height:1.55}
+
+    footer{margin-top:18px; color:var(--muted); font-size:12px; text-align:center; opacity:.9;}
+
+    /* LOTTO */
+    .lotto-shell{
+      background: var(--l-bg);
+      color: var(--l-text);
+      border-radius: 18px;
+      border: 1px solid var(--l-border);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      overflow:hidden;
+    }
+    .lotto-desc{
+      margin:0;
+      font-size:13px;
+      color: var(--l-text-muted);
+      line-height:1.5;
+      padding: 14px 16px;
+      background: var(--l-card);
+      border-bottom:1px solid var(--l-border);
+    }
+    .lotto-grid{
+      display:grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 16px;
+      padding: 16px;
+      background: var(--l-bg);
+    }
+    @media (max-width: 920px){ .lotto-grid{grid-template-columns:1fr} }
+    .lotto-panel{
+      background: var(--l-card2);
+      border: 1px solid var(--l-border);
+      border-radius: 16px;
+      padding: 14px;
+    }
+    .lotto-sets{ display:grid; gap:12px; }
+    .lotto-set{
+      background: var(--l-card3);
+      border: 1px solid var(--l-border);
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+    .lotto-set-title{
+      font-size: 13px;
+      color: var(--l-text-muted);
+      margin-bottom: 8px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .lotto-badge{
+      font-size: 12px;
+      color: var(--l-text-muted);
+      border: 1px solid var(--l-border);
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+    }
+    .lotto-balls{ display:flex; gap:10px; flex-wrap:wrap; }
+    .lotto-ball{
+      width:44px; height:44px; border-radius:50%;
+      display:grid; place-items:center;
+      font-weight:800;
+      background: var(--l-ball-bg);
+      color: var(--l-ball-text);
+      user-select:none;
+    }
+    .lotto-ball.pending{ opacity:.35; filter: blur(.2px); }
+    .lotto-ball.reveal{ animation: pop .22s ease-out both; }
+
+    .lotto-actions{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
+    .lotto-btn{
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      font-weight: 750;
+      background: var(--l-btn-bg);
+      color: var(--l-btn-text);
+      transition: transform 0.12s, opacity 0.12s;
+      white-space: nowrap;
+    }
+    .lotto-btn.secondary{
+      background: transparent;
+      color: var(--l-text);
+      border: 1px solid var(--l-border);
+    }
+    .lotto-btn:active{ transform: translateY(1px); }
+    .lotto-btn:disabled{ opacity:.5; cursor:not-allowed; }
+    .lotto-meta{ margin-top:12px; font-size:12px; color: var(--l-text-muted); }
+    .lotto-toast{ margin-top:8px; font-size:12px; color: var(--l-text-muted); min-height:16px; word-break:break-word; }
+
+    .lotto-history-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .lotto-history-title{ font-size: 15px; margin:0; color: var(--l-text); }
+    .lotto-history-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+    .lotto-history-list{
+      display:grid;
+      gap:10px;
+      max-height:520px;
+      overflow:auto;
+      padding-right:4px;
+    }
+    .lotto-history-item{
+      border:1px solid var(--l-border);
+      border-radius:14px;
+      padding:12px;
+      background: var(--l-card3);
+    }
+    .lotto-history-meta{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom:10px;
+      color: var(--l-text-muted);
+      font-size:12px;
+    }
+    .lotto-history-sets{ display:grid; gap:10px; }
+    .lotto-mini-set{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      border:1px solid var(--l-border);
+      border-radius:12px;
+      padding:10px 10px;
+      background: var(--l-card2);
+    }
+    .lotto-mini-set .label{
+      font-size:12px;
+      color: var(--l-text-muted);
+      min-width:52px;
+    }
+    .lotto-mini-balls{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-start;
+      flex:1;
+    }
+    .lotto-mini-ball{
+      width:34px; height:34px; border-radius:50%;
+      display:grid; place-items:center;
+      font-weight:800;
+      background: var(--l-ball-bg);
+      color: var(--l-ball-text);
+      font-size:13px;
+      user-select:none;
+    }
+    .lotto-row-actions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .lotto-hint{
+      font-size:12px;
+      color: var(--l-text-muted);
+      margin-top:8px;
+      line-height:1.5;
+    }
+
+    @keyframes pop {
+      from { transform: scale(0.86); opacity: 0.15; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+  </style>
 </head>
+
 <body>
-    <h1>Hello World!</h1>
-    <script src="main.js"></script>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="title">미니게임</div>
+        <div class="sub">메인 페이지에서 게임을 선택하면 서브 페이지로 이동합니다.</div>
+      </div>
+
+      <div class="top-controls">
+        <div class="pill">현재: <b id="routeName">메인</b></div>
+
+        <label class="toggle" title="효과음 ON/OFF">
+          <input id="sfxToggle" type="checkbox" checked>
+          SFX
+        </label>
+
+        <div class="range" title="효과음 볼륨">
+          볼륨
+          <input id="sfxVol" type="range" min="0" max="100" value="70">
+        </div>
+
+        <button class="btn ghost" id="globalThemeToggle" type="button">🌙 다크모드</button>
+      </div>
+    </header>
+
+    <!-- MAIN -->
+    <section class="view active" id="view-home" aria-label="메인">
+      <div class="grid">
+        <div class="card">
+          <div class="hd">
+            <div>
+              <h2>게임 선택</h2>
+              <p>원하는 미니게임을 골라 플레이하세요.</p>
+            </div>
+            <span class="tag">index.html 단일 파일</span>
+          </div>
+          <div class="bd">
+            <div class="btnrow">
+              <button class="btn primary" id="goRps">✌️ 가위바위보</button>
+              <button class="btn primary" id="goOmok">⚫ 오목(난이도)</button>
+              <button class="btn primary" id="goLotto">🎲 로또 추첨기</button>
+            </div>
+            <div class="hr"></div>
+            <div class="notice">
+              • <span class="kbd">ESC</span>로 메인으로 이동
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="hd">
+            <div>
+              <h2>조작 안내</h2>
+              <p>각 게임별 기본 조작을 확인하세요.</p>
+            </div>
+          </div>
+          <div class="bd">
+            <div class="panel">
+              <div style="font-weight:800; margin-bottom:6px;">가위바위보</div>
+              <div class="small">내가 선택 → 상대가 2초간 빠르게 가위/바위/보 변경 → 최종 선택 & 결과 사운드</div>
+              <div class="hr"></div>
+              <div style="font-weight:800; margin-bottom:6px;">오목(난이도)</div>
+              <div class="small">내가 흑(선) / AI가 백(후) 자동 착수. 쉬움/보통/어려움 선택 가능</div>
+              <div class="hr"></div>
+              <div style="font-weight:800; margin-bottom:6px;">로또</div>
+              <div class="small">순차 공개 + 효과음 + 기록 저장/복사</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RPS -->
+    <section class="view" id="view-rps" aria-label="가위바위보">
+      <div class="card">
+        <div class="hd">
+          <div>
+            <h2>가위바위보</h2>
+            <p>상대가 2초간 “가위→바위→보”를 빠르게 바꾸다가 최종 선택합니다.</p>
+          </div>
+          <div class="split">
+            <button class="btn ghost" data-nav="home">← 메인으로</button>
+            <button class="btn ghost" id="rpsThemeToggle" type="button">🌙 다크모드</button>
+            <button class="btn danger" id="rpsReset">기록 초기화</button>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="btnrow" style="margin-bottom:12px;">
+            <button class="btn primary" data-rps="scissors">가위 ✌️</button>
+            <button class="btn primary" data-rps="rock">바위 ✊</button>
+            <button class="btn primary" data-rps="paper">보 🖐️</button>
+          </div>
+
+          <div class="rps-area">
+            <div class="rps-box">
+              <div class="rps-label">내 선택</div>
+              <div class="rps-choice" id="myChoice">—</div>
+              <div class="rps-label">상대</div>
+              <div class="rps-choice" id="cpuChoice">—</div>
+              <div class="result" id="rpsResult">선택해 주세요.</div>
+
+              <div class="score">
+                <div class="stat">승: <b id="win">0</b></div>
+                <div class="stat">무: <b id="draw">0</b></div>
+                <div class="stat">패: <b id="lose">0</b></div>
+              </div>
+              <div class="small" style="margin-top:10px;">
+                팁: <span class="kbd">R</span> 기록 초기화
+              </div>
+            </div>
+
+            <div class="rps-box">
+              <div class="rps-label" style="margin-bottom:8px;">승부 기록</div>
+              <div class="history">
+                <ul id="histList"></ul>
+              </div>
+              <div class="small" style="margin-top:10px;">
+                기록은 로컬스토리지에 저장됩니다.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OMOK -->
+    <section class="view" id="view-omok" aria-label="오목 난이도">
+      <div class="card">
+        <div class="hd">
+          <div>
+            <h2>오목(1인용 + 난이도)</h2>
+            <p>내가 흑(선공), AI가 백(후공). 난이도를 선택하면 AI가 즉시 반영됩니다.</p>
+          </div>
+          <div class="split">
+            <button class="btn ghost" data-nav="home">← 메인으로</button>
+            <button class="btn ghost" id="omokThemeToggle" type="button">🌙 다크모드</button>
+
+            <span class="tag">
+              난이도:
+              <select id="aiLevel" style="margin-left:8px; padding:6px 10px; border-radius:10px; border:1px solid var(--line); background:var(--chip); color:var(--text);">
+                <option value="easy">쉬움</option>
+                <option value="normal" selected>보통</option>
+                <option value="hard">어려움</option>
+              </select>
+            </span>
+
+            <button class="btn" id="omokUndo">되돌리기</button>
+            <button class="btn danger" id="omokReset">새 게임</button>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="omok-wrap">
+            <div class="board-shell">
+              <div class="board-top">
+                <div>
+                  <span class="turn-dot black" id="turnDot"></span>
+                  <span style="font-weight:900" id="turnText">내 차례(흑)</span>
+                  <span class="muted" id="omokStatus" style="margin-left:10px;"></span>
+                </div>
+                <span class="tag">15×15</span>
+              </div>
+
+              <div class="board">
+                <div class="canvas-wrap" id="omokCanvasWrap">
+                  <canvas id="omokCanvas" aria-label="오목판"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div style="font-weight:900; margin-bottom:8px;">착수 기록</div>
+              <div class="moves">
+                <ol id="moveList"></ol>
+              </div>
+              <div class="hr"></div>
+              <div class="small">
+                • 난이도는 즉시 적용됩니다(다음 AI 착수부터).<br>
+                • <span class="kbd">U</span>: 되돌리기 / <span class="kbd">N</span>: 새 게임
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOTTO -->
+    <section class="view" id="view-lotto" aria-label="로또 추첨기">
+      <div class="card">
+        <div class="hd">
+          <div>
+            <h2>로또 번호 5세트 추천기</h2>
+            <p>공 굴러가는 소리 + 번호 “딸깍!”이 SET별로 순차 공개됩니다.</p>
+          </div>
+          <div class="split">
+            <button class="btn ghost" data-nav="home">← 메인으로</button>
+            <span class="tag">테마는 상단 버튼과 연동</span>
+          </div>
+        </div>
+
+        <div class="bd">
+          <div class="lotto-shell">
+            <p class="lotto-desc">“5세트 추천하기”를 누르면 공이 굴러가는 소리 + 번호가 하나씩 딸깍! 하며 SET별로 순차 공개됩니다.</p>
+
+            <div class="lotto-grid">
+              <section class="lotto-panel" aria-label="현재 추천 번호">
+                <div class="lotto-sets" id="lottoSets"></div>
+
+                <div class="lotto-actions">
+                  <button class="lotto-btn" id="lottoBtnPick" type="button">🎲 5세트 추천하기</button>
+                  <button class="lotto-btn secondary" id="lottoBtnCopy" type="button" disabled>📋 현재 결과 복사</button>
+                  <button class="lotto-btn secondary" id="lottoBtnReset" type="button">현재 화면 초기화</button>
+                </div>
+
+                <div class="lotto-meta" id="lottoMeta">아직 생성되지 않았습니다.</div>
+                <div class="lotto-toast" id="lottoToast" role="status" aria-live="polite"></div>
+              </section>
+
+              <aside class="lotto-panel" aria-label="생성 기록">
+                <div class="lotto-history-head">
+                  <h3 class="lotto-history-title">생성 기록</h3>
+                  <div class="lotto-history-actions">
+                    <button class="lotto-btn secondary" id="lottoBtnCopyHistory" type="button" disabled>📋 기록 전체 복사</button>
+                    <button class="lotto-btn secondary" id="lottoBtnClearHistory" type="button" disabled>🧹 기록 전체 삭제</button>
+                  </div>
+                </div>
+
+                <div class="lotto-history-list" id="lottoHistoryList"></div>
+
+                <div class="lotto-hint">
+                  • 기록은 브라우저 로컬스토리지에 저장됩니다.<br/>
+                  • “기록 전체 삭제”는 되돌릴 수 없습니다.
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>© Mini Games (index.html) — 로컬에서 바로 실행 가능</footer>
+  </div>
+
+  <script>
+    /***********************
+     * "해시 라우팅" 제거: URL(hash) 사용 안함
+     * 내부 상태(state)로 화면 전환
+     ************************/
+    const views = {
+      home: document.getElementById('view-home'),
+      rps: document.getElementById('view-rps'),
+      omok: document.getElementById('view-omok'),
+      lotto: document.getElementById('view-lotto')
+    };
+    const routeNameEl = document.getElementById('routeName');
+    let currentView = 'home';
+
+    function setView(name){
+      currentView = name;
+      Object.entries(views).forEach(([k, el]) => el.classList.toggle('active', k === name));
+
+      routeNameEl.textContent =
+        name === 'home' ? '메인' :
+        name === 'rps' ? '가위바위보' :
+        name === 'omok' ? '오목' : '로또';
+
+      // 오목은 "보이는 순간" 실제 크기로 다시 그려야 함
+      if(name === 'omok'){
+        scheduleOmokDraw(true);
+      }
+    }
+
+    document.getElementById('goRps').addEventListener('click', () => setView('rps'));
+    document.getElementById('goOmok').addEventListener('click', () => setView('omok'));
+    document.getElementById('goLotto').addEventListener('click', () => setView('lotto'));
+    document.querySelectorAll('[data-nav="home"]').forEach(b => b.addEventListener('click', () => setView('home')));
+
+    /***********************
+     * Global SFX Settings
+     ************************/
+    const SFX_ON_KEY = "mini_sfx_on_v1";
+    const SFX_VOL_KEY = "mini_sfx_vol_v1";
+
+    const sfxToggleEl = document.getElementById("sfxToggle");
+    const sfxVolEl = document.getElementById("sfxVol");
+
+    let SFX_ENABLED = (localStorage.getItem(SFX_ON_KEY) ?? "1") === "1";
+    let SFX_VOL = Number(localStorage.getItem(SFX_VOL_KEY) ?? "70"); // 0~100
+
+    sfxToggleEl.checked = SFX_ENABLED;
+    sfxVolEl.value = String(SFX_VOL);
+
+    sfxToggleEl.addEventListener("change", () => {
+      SFX_ENABLED = sfxToggleEl.checked;
+      localStorage.setItem(SFX_ON_KEY, SFX_ENABLED ? "1" : "0");
+    });
+    sfxVolEl.addEventListener("input", () => {
+      SFX_VOL = Number(sfxVolEl.value);
+      localStorage.setItem(SFX_VOL_KEY, String(SFX_VOL));
+    });
+
+    function vol(x){
+      if(!SFX_ENABLED) return 0;
+      const v = Math.max(0, Math.min(1, SFX_VOL/100));
+      return x * v;
+    }
+
+    /***********************
+     * Theme
+     ************************/
+    const THEME_KEY = "theme";
+    const htmlEl = document.documentElement;
+    const globalThemeBtn = document.getElementById("globalThemeToggle");
+    const rpsThemeBtn = document.getElementById("rpsThemeToggle");
+    const omokThemeBtn = document.getElementById("omokThemeToggle");
+
+    function applyTheme(theme){
+      htmlEl.setAttribute("data-theme", theme);
+      localStorage.setItem(THEME_KEY, theme);
+      const label = theme === "dark" ? "☀️ 화이트모드" : "🌙 다크모드";
+      globalThemeBtn.textContent = label;
+      if(rpsThemeBtn) rpsThemeBtn.textContent = label;
+      if(omokThemeBtn) omokThemeBtn.textContent = label;
+    }
+    function toggleTheme(){
+      const current = htmlEl.getAttribute("data-theme") || "dark";
+      applyTheme(current === "dark" ? "light" : "dark");
+    }
+    applyTheme(localStorage.getItem(THEME_KEY) || "dark");
+    globalThemeBtn.addEventListener("click", toggleTheme);
+    if(rpsThemeBtn) rpsThemeBtn.addEventListener("click", toggleTheme);
+    if(omokThemeBtn) omokThemeBtn.addEventListener("click", toggleTheme);
+
+    /***********************
+     * Audio Engine
+     ************************/
+    let audioCtx = null;
+    function getAudioCtx(){
+      if(!audioCtx){
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if(!Ctx) return null;
+        audioCtx = new Ctx();
+      }
+      return audioCtx;
+    }
+    async function ensureAudio(){
+      const ctx = getAudioCtx();
+      if(!ctx) return null;
+      if(ctx.state === "suspended"){
+        try{ await ctx.resume(); }catch{}
+      }
+      return ctx;
+    }
+
+    function sfxRpsStart(){
+      const ctx = getAudioCtx(); if(!ctx) return;
+      if (ctx.state === "suspended") ctx.resume().catch(()=>{});
+      const t = ctx.currentTime;
+
+      const master = ctx.createGain();
+      master.gain.setValueAtTime(vol(0.20), t);
+      master.connect(ctx.destination);
+
+      const noiseBuf = ctx.createBuffer(1, Math.floor(ctx.sampleRate*0.18), ctx.sampleRate);
+      const d = noiseBuf.getChannelData(0);
+      for(let i=0;i<d.length;i++) d[i] = (Math.random()*2-1) * (1 - i/d.length);
+
+      const noise = ctx.createBufferSource(); noise.buffer = noiseBuf;
+      const hp = ctx.createBiquadFilter(); hp.type="highpass"; hp.frequency.setValueAtTime(600, t);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol(0.18), t+0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+0.18);
+
+      noise.connect(hp); hp.connect(g); g.connect(master);
+      noise.start(t); noise.stop(t+0.19);
+      master.gain.linearRampToValueAtTime(0.0001, t+0.22);
+    }
+    function sfxRpsTick(){
+      const ctx = getAudioCtx(); if(!ctx) return;
+      if (ctx.state === "suspended") ctx.resume().catch(()=>{});
+      const t = ctx.currentTime;
+
+      const master = ctx.createGain();
+      master.gain.setValueAtTime(vol(0.09), t);
+      master.connect(ctx.destination);
+
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = "square";
+      o.frequency.setValueAtTime(520 + Math.random()*120, t);
+
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol(0.14), t+0.002);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+0.04);
+
+      o.connect(g); g.connect(master);
+      o.start(t); o.stop(t+0.05);
+      master.gain.linearRampToValueAtTime(0.0001, t+0.06);
+    }
+
+    function sfxWinFanfare(){
+      const ctx = getAudioCtx(); if(!ctx) return;
+      if (ctx.state === "suspended") ctx.resume().catch(()=>{});
+      const t = ctx.currentTime;
+
+      const master = ctx.createGain();
+      master.gain.setValueAtTime(vol(0.20), t);
+      master.connect(ctx.destination);
+
+      function tone(freq, start, dur, type="sine", amp=0.14){
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = type; o.frequency.setValueAtTime(freq, start);
+        g.gain.setValueAtTime(0.0001, start);
+        g.gain.exponentialRampToValueAtTime(vol(amp), start+0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, start+dur);
+        o.connect(g); g.connect(master);
+        o.start(start); o.stop(start+dur+0.03);
+      }
+      tone(523.25, t, 0.18, "square", 0.10);
+      tone(659.25, t+0.08, 0.20, "square", 0.10);
+      tone(783.99, t+0.16, 0.25, "square", 0.10);
+      tone(1046.5, t+0.24, 0.30, "triangle", 0.09);
+
+      const noiseBuf = ctx.createBuffer(1, Math.floor(ctx.sampleRate*0.35), ctx.sampleRate);
+      const d = noiseBuf.getChannelData(0);
+      for(let i=0;i<d.length;i++) d[i] = (Math.random()*2-1) * (1 - i/d.length);
+      const noise = ctx.createBufferSource(); noise.buffer = noiseBuf;
+      const bp = ctx.createBiquadFilter(); bp.type="bandpass"; bp.frequency.setValueAtTime(2500, t); bp.Q.setValueAtTime(1.1, t);
+      const ng = ctx.createGain(); ng.gain.setValueAtTime(0.0001, t); ng.gain.exponentialRampToValueAtTime(vol(0.10), t+0.02); ng.gain.exponentialRampToValueAtTime(0.0001, t+0.35);
+      noise.connect(bp); bp.connect(ng); ng.connect(master);
+      noise.start(t); noise.stop(t+0.36);
+
+      master.gain.linearRampToValueAtTime(0.0001, t+0.7);
+    }
+
+    function sfxLoseSad(){
+      const ctx = getAudioCtx(); if(!ctx) return;
+      if (ctx.state === "suspended") ctx.resume().catch(()=>{});
+      const t = ctx.currentTime;
+
+      const master = ctx.createGain();
+      master.gain.setValueAtTime(vol(0.22), t);
+      master.connect(ctx.destination);
+
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = "sawtooth";
+      o.frequency.setValueAtTime(380, t);
+      o.frequency.exponentialRampToValueAtTime(180, t+0.45);
+
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol(0.18), t+0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+0.50);
+
+      const lp = ctx.createBiquadFilter();
+      lp.type="lowpass";
+      lp.frequency.setValueAtTime(900, t);
+      lp.frequency.exponentialRampToValueAtTime(420, t+0.45);
+
+      o.connect(lp); lp.connect(g); g.connect(master);
+      o.start(t); o.stop(t+0.52);
+      master.gain.linearRampToValueAtTime(0.0001, t+0.6);
+    }
+
+    function sfxStonePlace(){
+      const ctx = getAudioCtx(); if(!ctx) return;
+      if (ctx.state === "suspended") ctx.resume().catch(()=>{});
+      const t = ctx.currentTime;
+
+      const master = ctx.createGain();
+      master.gain.setValueAtTime(vol(0.40), t);
+      master.connect(ctx.destination);
+
+      const o1 = ctx.createOscillator();
+      const g1 = ctx.createGain();
+      o1.type="sine";
+      o1.frequency.setValueAtTime(190, t);
+      o1.frequency.exponentialRampToValueAtTime(95, t+0.09);
+      g1.gain.setValueAtTime(0.0001, t);
+      g1.gain.exponentialRampToValueAtTime(vol(0.28), t+0.008);
+      g1.gain.exponentialRampToValueAtTime(0.0001, t+0.16);
+      o1.connect(g1); g1.connect(master);
+      o1.start(t); o1.stop(t+0.18);
+
+      const o2 = ctx.createOscillator();
+      const g2 = ctx.createGain();
+      o2.type="square";
+      o2.frequency.setValueAtTime(1400 + Math.random()*260, t);
+      g2.gain.setValueAtTime(0.0001, t);
+      g2.gain.exponentialRampToValueAtTime(vol(0.14), t+0.002);
+      g2.gain.exponentialRampToValueAtTime(0.0001, t+0.045);
+      o2.connect(g2); g2.connect(master);
+      o2.start(t); o2.stop(t+0.06);
+
+      master.gain.linearRampToValueAtTime(0.0001, t+0.22);
+    }
+
+    /***********************
+     * RPS
+     ************************/
+    const RPS_KEY = 'mini_rps_v2';
+    const rpsMap = {
+      scissors: { label: '가위', emoji: '✌️' },
+      rock:     { label: '바위', emoji: '✊' },
+      paper:    { label: '보',   emoji: '🖐️' }
+    };
+    const beats = { scissors: 'paper', rock: 'scissors', paper: 'rock' };
+
+    const myChoiceEl = document.getElementById('myChoice');
+    const cpuChoiceEl = document.getElementById('cpuChoice');
+    const rpsResultEl = document.getElementById('rpsResult');
+    const winEl = document.getElementById('win');
+    const drawEl = document.getElementById('draw');
+    const loseEl = document.getElementById('lose');
+    const histList = document.getElementById('histList');
+    const rpsButtons = [...document.querySelectorAll('[data-rps]')];
+
+    let rpsBusy = false;
+
+    function loadRps(){
+      try{
+        const raw = localStorage.getItem(RPS_KEY);
+        if(!raw) return { w:0, d:0, l:0, hist:[] };
+        const data = JSON.parse(raw);
+        return {
+          w: Number(data.w||0),
+          d: Number(data.d||0),
+          l: Number(data.l||0),
+          hist: Array.isArray(data.hist) ? data.hist.slice(0, 50) : []
+        };
+      }catch(_){
+        return { w:0, d:0, l:0, hist:[] };
+      }
+    }
+    function saveRps(state){ localStorage.setItem(RPS_KEY, JSON.stringify(state)); }
+
+    function renderRps(){
+      const st = loadRps();
+      winEl.textContent = st.w;
+      drawEl.textContent = st.d;
+      loseEl.textContent = st.l;
+      histList.innerHTML = '';
+      if(st.hist.length === 0){
+        const li = document.createElement('li');
+        li.textContent = '아직 기록이 없어요.';
+        histList.appendChild(li);
+        return;
+      }
+      st.hist.forEach(line => {
+        const li = document.createElement('li');
+        li.textContent = line;
+        histList.appendChild(li);
+      });
+    }
+
+    function judge(me, cpu){
+      if(me === cpu) return 'draw';
+      if(beats[me] === cpu) return 'win';
+      return 'lose';
+    }
+    function randomRps(){
+      const keys = Object.keys(rpsMap);
+      return keys[Math.floor(Math.random()*keys.length)];
+    }
+
+    async function playRps(me){
+      if(rpsBusy) return;
+      rpsBusy = true;
+
+      await ensureAudio();
+
+      rpsButtons.forEach(b => b.disabled = true);
+      rpsResultEl.className = 'result';
+      rpsResultEl.textContent = '상대 선택 중…';
+
+      myChoiceEl.textContent = rpsMap[me].emoji;
+
+      try{ sfxRpsStart(); }catch{}
+
+      const startAt = performance.now();
+      let lastTick = 0;
+      const order = ['scissors','rock','paper'];
+      let idx = 0;
+
+      await new Promise(resolve => {
+        const timer = setInterval(() => {
+          const now = performance.now();
+          if(now - startAt >= 2000){
+            clearInterval(timer);
+            resolve();
+            return;
+          }
+          if(now - lastTick >= 90){
+            lastTick = now;
+            const cur = order[idx % order.length];
+            idx++;
+            cpuChoiceEl.textContent = rpsMap[cur].emoji;
+            try{ sfxRpsTick(); }catch{}
+          }
+        }, 20);
+      });
+
+      const cpu = randomRps();
+      cpuChoiceEl.textContent = rpsMap[cpu].emoji;
+
+      const outcome = judge(me, cpu);
+      rpsResultEl.className = 'result ' + outcome;
+      rpsResultEl.textContent = outcome === 'win' ? '승리!' : outcome === 'draw' ? '무승부!' : '패배!';
+
+      if(outcome === 'win') { try{ sfxWinFanfare(); }catch{} }
+      if(outcome === 'lose'){ try{ sfxLoseSad(); }catch{} }
+
+      const st = loadRps();
+      if(outcome === 'win') st.w++;
+      if(outcome === 'draw') st.d++;
+      if(outcome === 'lose') st.l++;
+
+      const ts = new Date();
+      const t = ts.toLocaleTimeString('ko-KR', { hour:'2-digit', minute:'2-digit' });
+      const line = `[${t}] 나: ${rpsMap[me].label} / 상대: ${rpsMap[cpu].label} → ${outcome === 'win' ? '승' : outcome === 'draw' ? '무' : '패'}`;
+      st.hist.unshift(line);
+      st.hist = st.hist.slice(0, 50);
+      saveRps(st);
+      renderRps();
+
+      rpsButtons.forEach(b => b.disabled = false);
+      rpsBusy = false;
+    }
+
+    function resetRps(){
+      localStorage.removeItem(RPS_KEY);
+      myChoiceEl.textContent = '—';
+      cpuChoiceEl.textContent = '—';
+      rpsResultEl.className = 'result';
+      rpsResultEl.textContent = '선택해 주세요.';
+      renderRps();
+    }
+    rpsButtons.forEach(btn => btn.addEventListener('click', () => playRps(btn.getAttribute('data-rps'))));
+    document.getElementById('rpsReset').addEventListener('click', resetRps);
+
+    /***********************
+     * OMOK (난이도 + 잘림 해결)
+     ************************/
+    const OMOK_LEVEL_KEY = "omok_ai_level_v1";
+
+    const SIZE = 15;
+    const EMPTY = 0, BLACK = 1, WHITE = 2;
+
+    const canvas = document.getElementById('omokCanvas');
+    const omokCanvasWrap = document.getElementById('omokCanvasWrap');
+    const ctx = canvas.getContext('2d');
+
+    const turnDot = document.getElementById('turnDot');
+    const turnText = document.getElementById('turnText');
+    const omokStatus = document.getElementById('omokStatus');
+    const moveList = document.getElementById('moveList');
+    const aiLevelEl = document.getElementById('aiLevel');
+
+    const savedLevel = localStorage.getItem(OMOK_LEVEL_KEY);
+    if(savedLevel && ["easy","normal","hard"].includes(savedLevel)){
+      aiLevelEl.value = savedLevel;
+    }
+    aiLevelEl.addEventListener("change", () => {
+      localStorage.setItem(OMOK_LEVEL_KEY, aiLevelEl.value);
+      omokStatus.textContent = `난이도: ${aiLevelEl.value === "easy" ? "쉬움" : aiLevelEl.value === "normal" ? "보통" : "어려움"}`;
+      setTimeout(() => { if(!gameOver) omokStatus.textContent = ""; }, 900);
+    });
+
+    let board = [];
+    let turn = BLACK;
+    let moves = [];
+    let gameOver = false;
+    let winner = EMPTY;
+    let lastMove = null;
+    let aiBusy = false;
+
+    // ✅ 잘림/미표시의 원인 분석(핵심)
+    // 1) display:none 상태의 캔버스는 clientWidth/Height = 0 → 그려도 안 보임
+    // 2) 이전 레이아웃에서 canvas-wrap이 부모보다 커질 수 있어 overflow로 잘림
+    // 해결:
+    // - setView('omok')에서 "보인 뒤" 강제 리사이즈+draw
+    // - canvas-wrap을 width:100%로 바꿔 부모 폭을 넘지 않게 함
+    // - ResizeObserver로 컨테이너 변화를 감지해 재드로잉
+
+    let omokDrawQueued = false;
+    function scheduleOmokDraw(force=false){
+      if(currentView !== 'omok' && !force) return;
+      if(omokDrawQueued) return;
+      omokDrawQueued = true;
+
+      // 보이는 순간 레이아웃이 확정되도록 2프레임 대기
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          omokDrawQueued = false;
+          drawOmok();
+        });
+      });
+    }
+
+    if(window.ResizeObserver){
+      const ro = new ResizeObserver(() => scheduleOmokDraw());
+      ro.observe(omokCanvasWrap);
+    }else{
+      window.addEventListener('resize', () => scheduleOmokDraw());
+    }
+
+    function newBoard(){
+      board = Array.from({length: SIZE}, () => Array.from({length: SIZE}, () => EMPTY));
+      turn = BLACK;
+      moves = [];
+      gameOver = false;
+      winner = EMPTY;
+      lastMove = null;
+      aiBusy = false;
+      omokStatus.textContent = '';
+      renderTurn();
+      renderMoves();
+      scheduleOmokDraw();
+    }
+
+    function renderTurn(){
+      const isUserTurn = turn === BLACK;
+      turnDot.className = 'turn-dot ' + (isUserTurn ? 'black' : 'white');
+      turnText.textContent = isUserTurn ? '내 차례(흑)' : 'AI 차례(백)';
+    }
+
+    function renderMoves(){
+      moveList.innerHTML = '';
+      if(moves.length === 0){
+        const li = document.createElement('li');
+        li.textContent = '아직 착수 없음';
+        moveList.appendChild(li);
+        return;
+      }
+      moves.forEach((m, idx) => {
+        const li = document.createElement('li');
+        const p = m.player === BLACK ? '흑(나)' : '백(AI)';
+        const col = String.fromCharCode('A'.charCodeAt(0) + m.x);
+        const row = (m.y + 1);
+        li.textContent = `${idx+1}. ${p} — ${col}${row}`;
+        moveList.appendChild(li);
+      });
+    }
+
+    function drawOmok(){
+      if(currentView !== 'omok') return;
+
+      const rect = omokCanvasWrap.getBoundingClientRect();
+      const cw = Math.floor(rect.width);
+      const ch = Math.floor(rect.height);
+
+      // 혹시 레이아웃 확정 전(0)이면 다시 예약
+      if(!cw || !ch){
+        scheduleOmokDraw(true);
+        return;
+      }
+
+      const dpr = window.devicePixelRatio || 1;
+      const w = Math.max(1, Math.floor(cw * dpr));
+      const h = Math.max(1, Math.floor(ch * dpr));
+
+      if(canvas.width !== w || canvas.height !== h){
+        canvas.width = w;
+        canvas.height = h;
+      }
+
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+
+      const pad = canvas.width * 0.06;
+      const gridSize = canvas.width - pad*2;
+      const cell = gridSize / (SIZE - 1);
+
+      ctx.save();
+      ctx.lineWidth = Math.max(1, canvas.width * 0.002);
+      ctx.strokeStyle = 'rgba(0,0,0,.55)';
+      for(let i=0;i<SIZE;i++){
+        const x = pad + i*cell;
+        const y = pad + i*cell;
+        ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(pad + (SIZE-1)*cell, y); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x, pad); ctx.lineTo(x, pad + (SIZE-1)*cell); ctx.stroke();
+      }
+      const stars = [3, 7, 11];
+      ctx.fillStyle = 'rgba(0,0,0,.55)';
+      stars.forEach(sx => stars.forEach(sy => {
+        const x = pad + sx*cell;
+        const y = pad + sy*cell;
+        ctx.beginPath(); ctx.arc(x, y, cell*0.10, 0, Math.PI*2); ctx.fill();
+      }));
+      ctx.restore();
+
+      for(let y=0;y<SIZE;y++){
+        for(let x=0;x<SIZE;x++){
+          const v = board[y][x];
+          if(v === EMPTY) continue;
+          const cx = pad + x*cell;
+          const cy = pad + y*cell;
+          const r = cell*0.40;
+
+          ctx.save();
+          ctx.globalAlpha = 0.22;
+          ctx.fillStyle = '#000';
+          ctx.beginPath(); ctx.arc(cx + r*0.10, cy + r*0.12, r*1.02, 0, Math.PI*2); ctx.fill();
+          ctx.restore();
+
+          ctx.save();
+          ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
+          if(v === BLACK){
+            const g = ctx.createRadialGradient(cx - r*0.35, cy - r*0.35, r*0.2, cx, cy, r);
+            g.addColorStop(0, 'rgba(255,255,255,.10)');
+            g.addColorStop(1, 'rgba(0,0,0,.95)');
+            ctx.fillStyle = g; ctx.fill();
+            ctx.strokeStyle = 'rgba(255,255,255,.12)';
+            ctx.lineWidth = Math.max(1, canvas.width * 0.0015);
+            ctx.stroke();
+          }else{
+            const g = ctx.createRadialGradient(cx - r*0.35, cy - r*0.35, r*0.2, cx, cy, r);
+            g.addColorStop(0, 'rgba(255,255,255,.98)');
+            g.addColorStop(1, 'rgba(210,210,210,.95)');
+            ctx.fillStyle = g; ctx.fill();
+            ctx.strokeStyle = 'rgba(0,0,0,.20)';
+            ctx.lineWidth = Math.max(1, canvas.width * 0.0015);
+            ctx.stroke();
+          }
+          ctx.restore();
+
+          if(lastMove && lastMove.x === x && lastMove.y === y){
+            ctx.save();
+            ctx.strokeStyle = 'rgba(122,162,255,.95)';
+            ctx.lineWidth = Math.max(2, canvas.width * 0.003);
+            ctx.beginPath(); ctx.arc(cx, cy, r*0.55, 0, Math.PI*2); ctx.stroke();
+            ctx.restore();
+          }
+        }
+      }
+
+      if(gameOver){
+        ctx.save();
+        ctx.globalAlpha = 0.55;
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = 'rgba(255,255,255,.95)';
+        ctx.font = `900 ${Math.floor(canvas.width*0.055)}px ui-sans-serif, system-ui`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const msg = winner === BLACK ? '내가 승리!' : 'AI 승리!';
+        ctx.fillText(msg, canvas.width/2, canvas.height/2);
+        ctx.restore();
+      }
+    }
+
+    function inside(x,y){ return x>=0 && y>=0 && x<SIZE && y<SIZE; }
+
+    function checkWinFrom(x, y, player){
+      const dirs = [{dx:1,dy:0},{dx:0,dy:1},{dx:1,dy:1},{dx:1,dy:-1}];
+      for(const d of dirs){
+        let count = 1;
+        let nx = x + d.dx, ny = y + d.dy;
+        while(inside(nx,ny) && board[ny][nx] === player){ count++; nx+=d.dx; ny+=d.dy; }
+        nx = x - d.dx; ny = y - d.dy;
+        while(inside(nx,ny) && board[ny][nx] === player){ count++; nx-=d.dx; ny-=d.dy; }
+        if(count >= 5) return true;
+      }
+      return false;
+    }
+
+    function isBoardFull(){
+      for(let y=0;y<SIZE;y++) for(let x=0;x<SIZE;x++) if(board[y][x] === EMPTY) return false;
+      return true;
+    }
+
+    async function endGame(winPlayer){
+      gameOver = true;
+      winner = winPlayer;
+      omokStatus.textContent = '게임 종료';
+      scheduleOmokDraw();
+      if(winPlayer === BLACK){ try{ sfxWinFanfare(); }catch{} }
+      if(winPlayer === WHITE){ try{ sfxLoseSad(); }catch{} }
+    }
+
+    function placeStoneCore(x,y,player, playSfx=true){
+      if(!inside(x,y)) return false;
+      if(board[y][x] !== EMPTY) return false;
+      board[y][x] = player;
+      moves.push({x,y,player});
+      lastMove = {x,y};
+      if(playSfx){ try{ sfxStonePlace(); }catch{} }
+      renderMoves();
+      scheduleOmokDraw();
+      return true;
+    }
+
+    function patternScore(len, openEnds){
+      if(len >= 5) return 1000000;
+      if(len === 4 && openEnds === 2) return 200000;
+      if(len === 4 && openEnds === 1) return 50000;
+      if(len === 3 && openEnds === 2) return 12000;
+      if(len === 3 && openEnds === 1) return 2500;
+      if(len === 2 && openEnds === 2) return 600;
+      if(len === 2 && openEnds === 1) return 150;
+      if(len === 1 && openEnds === 2) return 40;
+      return 10;
+    }
+
+    function evaluateAt(x,y,player){
+      const dirs = [{dx:1,dy:0},{dx:0,dy:1},{dx:1,dy:1},{dx:1,dy:-1}];
+      let score = 0;
+
+      for(const d of dirs){
+        let a=0, b=0;
+        let nx=x+d.dx, ny=y+d.dy;
+        while(inside(nx,ny) && board[ny][nx]===player){ a++; nx+=d.dx; ny+=d.dy; }
+        const openA = inside(nx,ny) && board[ny][nx]===EMPTY;
+
+        nx=x-d.dx; ny=y-d.dy;
+        while(inside(nx,ny) && board[ny][nx]===player){ b++; nx-=d.dx; ny-=d.dy; }
+        const openB = inside(nx,ny) && board[ny][nx]===EMPTY;
+
+        const len = 1 + a + b;
+        const openEnds = (openA?1:0) + (openB?1:0);
+        score += patternScore(len, openEnds);
+      }
+
+      const cx=7, cy=7;
+      const dist = Math.abs(x-cx)+Math.abs(y-cy);
+      const level = aiLevelEl.value;
+      const centerBonus = level === "easy" ? 18 : level === "normal" ? 28 : 40;
+      score += Math.max(0, centerBonus - dist);
+
+      return score;
+    }
+
+    function wouldWinAt(x,y,p){
+      board[y][x] = p;
+      const ok = checkWinFrom(x,y,p);
+      board[y][x] = EMPTY;
+      return ok;
+    }
+
+    function getAiParams(){
+      const level = aiLevelEl.value;
+      if(level === "easy"){
+        return { noise: 900, radius: 1, wAttack: 0.85, wDefend: 0.90, thinkDelay: 220 };
+      }
+      if(level === "hard"){
+        return { noise: 0, radius: 2, wAttack: 1.18, wDefend: 1.30, thinkDelay: 260 };
+      }
+      return { noise: 220, radius: 2, wAttack: 1.0, wDefend: 1.08, thinkDelay: 240 };
+    }
+
+    function candidateCellsByRadius(radius){
+      const hasAny = moves.length > 0;
+      if(!hasAny) return [{x:7,y:7}];
+
+      const cand = [];
+      for(let y=0;y<SIZE;y++){
+        for(let x=0;x<SIZE;x++){
+          if(board[y][x] !== EMPTY) continue;
+          let near = 0;
+          for(let dy=-radius;dy<=radius;dy++){
+            for(let dx=-radius;dx<=radius;dx++){
+              const nx=x+dx, ny=y+dy;
+              if(!inside(nx,ny)) continue;
+              if(board[ny][nx] !== EMPTY) near++;
+            }
+          }
+          if(near>0) cand.push({x,y});
+        }
+      }
+      return cand.length ? cand : [{x:7,y:7}];
+    }
+
+    function findBestMoveAI(){
+      const me = WHITE;
+      const opp = BLACK;
+      const {noise, radius, wAttack, wDefend} = getAiParams();
+
+      const cand = candidateCellsByRadius(radius);
+      if(cand.length === 0) return null;
+
+      for(const c of cand) if(wouldWinAt(c.x,c.y,me)) return c;
+      for(const c of cand) if(wouldWinAt(c.x,c.y,opp)) return c;
+
+      let best = cand[0], bestScore = -Infinity;
+
+      for(const c of cand){
+        const attack = evaluateAt(c.x,c.y,me) * wAttack;
+        const defend = evaluateAt(c.x,c.y,opp) * wDefend;
+        let s = attack + defend;
+
+        if(noise > 0) s += (Math.random() * noise) - (noise/2);
+
+        if(s > bestScore){
+          bestScore = s;
+          best = c;
+        }
+      }
+      return best;
+    }
+
+    async function aiTurn(){
+      if(gameOver) return;
+      aiBusy = true;
+      turn = WHITE;
+      renderTurn();
+
+      await ensureAudio();
+
+      const {thinkDelay} = getAiParams();
+      await new Promise(r => setTimeout(r, thinkDelay));
+
+      const move = findBestMoveAI();
+      if(!move){
+        aiBusy = false;
+        return;
+      }
+      placeStoneCore(move.x, move.y, WHITE, true);
+
+      if(checkWinFrom(move.x, move.y, WHITE)){
+        await endGame(WHITE);
+        aiBusy = false;
+        return;
+      }
+      if(isBoardFull()){
+        omokStatus.textContent = "무승부";
+        gameOver = true;
+        scheduleOmokDraw();
+        aiBusy = false;
+        return;
+      }
+
+      turn = BLACK;
+      renderTurn();
+      aiBusy = false;
+    }
+
+    async function userPlace(x,y){
+      if(gameOver) return;
+      if(aiBusy) return;
+      if(turn !== BLACK) return;
+
+      const ok = placeStoneCore(x,y,BLACK,true);
+      if(!ok) return;
+
+      if(checkWinFrom(x,y,BLACK)){
+        await endGame(BLACK);
+        return;
+      }
+      if(isBoardFull()){
+        omokStatus.textContent = "무승부";
+        gameOver = true;
+        scheduleOmokDraw();
+        return;
+      }
+
+      await aiTurn();
+    }
+
+    function undo(){
+      if(moves.length === 0) return;
+      if(aiBusy) return;
+
+      function popOne(){
+        const m = moves.pop();
+        if(!m) return;
+        board[m.y][m.x] = EMPTY;
+      }
+
+      if(gameOver){
+        gameOver = false; winner = EMPTY; omokStatus.textContent = '';
+      }
+
+      if(moves.length){
+        const last = moves[moves.length-1];
+        if(last.player === WHITE){
+          popOne();
+          if(moves.length) popOne();
+        }else{
+          popOne();
+        }
+      }
+
+      lastMove = moves.length ? {x:moves[moves.length-1].x, y:moves[moves.length-1].y} : null;
+      turn = BLACK;
+      renderTurn();
+      renderMoves();
+      scheduleOmokDraw();
+    }
+
+    function canvasToGrid(ev){
+      const rect = canvas.getBoundingClientRect();
+      const x = ev.clientX - rect.left;
+      const y = ev.clientY - rect.top;
+
+      const size = rect.width;
+      const pad = size * 0.06;
+      const cell = (size - pad*2) / (SIZE - 1);
+
+      const gx = Math.round((x - pad)/cell);
+      const gy = Math.round((y - pad)/cell);
+      return {gx, gy};
+    }
+
+    canvas.addEventListener('click', async (ev) => {
+      await ensureAudio();
+      const {gx, gy} = canvasToGrid(ev);
+      userPlace(gx, gy);
+    });
+
+    document.getElementById('omokReset').addEventListener('click', newBoard);
+    document.getElementById('omokUndo').addEventListener('click', undo);
+
+    /***********************
+     * LOTTO (원본 유지)
+     ************************/
+    function startRollingSound(durationSec = 5.0, volumeBase = 0.32) {
+      const ctx = getAudioCtx();
+      if (!ctx) return null;
+      if (ctx.state === "suspended") ctx.resume().catch(() => {});
+      const t0 = ctx.currentTime;
+
+      const master = ctx.createGain();
+      master.gain.setValueAtTime(vol(volumeBase), t0);
+      master.connect(ctx.destination);
+
+      const rumble = ctx.createOscillator();
+      const rumbleGain = ctx.createGain();
+      rumble.type = "sine";
+      rumble.frequency.setValueAtTime(55, t0);
+      rumble.frequency.linearRampToValueAtTime(62, t0 + durationSec);
+
+      rumbleGain.gain.setValueAtTime(0.0, t0);
+      rumbleGain.gain.linearRampToValueAtTime(vol(0.22), t0 + 0.15);
+      rumbleGain.gain.linearRampToValueAtTime(vol(0.12), t0 + durationSec);
+      rumbleGain.gain.linearRampToValueAtTime(0.0001, t0 + durationSec + 0.12);
+
+      rumble.connect(rumbleGain);
+      rumbleGain.connect(master);
+
+      const noiseBuf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * durationSec), ctx.sampleRate);
+      const data = noiseBuf.getChannelData(0);
+      for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1);
+
+      const noise = ctx.createBufferSource();
+      noise.buffer = noiseBuf;
+
+      const band = ctx.createBiquadFilter();
+      band.type = "bandpass";
+      band.frequency.setValueAtTime(1200, t0);
+      band.Q.setValueAtTime(0.7, t0);
+
+      const lfo = ctx.createOscillator();
+      const lfoGain = ctx.createGain();
+      lfo.type = "sine";
+      lfo.frequency.setValueAtTime(2.2, t0);
+      lfoGain.gain.setValueAtTime(320, t0);
+
+      lfo.connect(lfoGain);
+      lfoGain.connect(band.frequency);
+
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.0, t0);
+      noiseGain.gain.linearRampToValueAtTime(vol(0.20), t0 + 0.2);
+      noiseGain.gain.linearRampToValueAtTime(vol(0.14), t0 + durationSec);
+      noiseGain.gain.linearRampToValueAtTime(0.0001, t0 + durationSec + 0.12);
+
+      noise.connect(band);
+      band.connect(noiseGain);
+      noiseGain.connect(master);
+
+      const clickGain = ctx.createGain();
+      clickGain.gain.setValueAtTime(vol(0.55), t0);
+      clickGain.connect(master);
+
+      const clickInterval = setInterval(() => {
+        if(!SFX_ENABLED) return;
+        const now = ctx.currentTime;
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = "square";
+        o.frequency.setValueAtTime(220 + Math.random() * 180, now);
+        g.gain.setValueAtTime(0.0001, now);
+        g.gain.exponentialRampToValueAtTime(vol(0.12), now + 0.004);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + 0.03);
+        o.connect(g);
+        g.connect(clickGain);
+        o.start(now);
+        o.stop(now + 0.04);
+      }, 70 + Math.floor(Math.random() * 60));
+
+      rumble.start(t0);
+      noise.start(t0);
+      lfo.start(t0);
+
+      const stopAt = t0 + durationSec;
+      rumble.stop(stopAt + 0.2);
+      noise.stop(stopAt + 0.2);
+      lfo.stop(stopAt + 0.2);
+
+      const stopTimer = setTimeout(() => {
+        clearInterval(clickInterval);
+        clearTimeout(stopTimer);
+      }, Math.ceil((durationSec + 0.3) * 1000));
+
+      return {
+        stop: () => {
+          try { clearInterval(clickInterval); } catch {}
+          try { master.gain.cancelScheduledValues(ctx.currentTime); } catch {}
+          try { master.gain.setValueAtTime(master.gain.value, ctx.currentTime); } catch {}
+          try { master.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + 0.08); } catch {}
+        }
+      };
+    }
+
+    function playTick() {
+      const ctx = getAudioCtx();
+      if (!ctx) return;
+      if (ctx.state === "suspended") ctx.resume().catch(() => {});
+      const t = ctx.currentTime;
+
+      const master = ctx.createGain();
+      master.gain.setValueAtTime(vol(0.38), t);
+      master.connect(ctx.destination);
+
+      const o1 = ctx.createOscillator();
+      const g1 = ctx.createGain();
+      o1.type = "square";
+      o1.frequency.setValueAtTime(760, t);
+
+      g1.gain.setValueAtTime(0.0001, t);
+      g1.gain.exponentialRampToValueAtTime(vol(0.22), t + 0.003);
+      g1.gain.exponentialRampToValueAtTime(0.0001, t + 0.055);
+
+      o1.connect(g1);
+      g1.connect(master);
+
+      const o2 = ctx.createOscillator();
+      const g2 = ctx.createGain();
+      o2.type = "triangle";
+      o2.frequency.setValueAtTime(1500, t);
+
+      g2.gain.setValueAtTime(0.0001, t);
+      g2.gain.exponentialRampToValueAtTime(vol(0.10), t + 0.002);
+      g2.gain.exponentialRampToValueAtTime(0.0001, t + 0.03);
+
+      o2.connect(g2);
+      g2.connect(master);
+
+      o1.start(t); o2.start(t);
+      o1.stop(t + 0.07);
+      o2.stop(t + 0.05);
+
+      master.gain.linearRampToValueAtTime(0.0001, t + 0.09);
+    }
+
+    function playFinishChime() {
+      const ctx = getAudioCtx();
+      if (!ctx) return;
+      if (ctx.state === "suspended") ctx.resume().catch(() => {});
+      const t = ctx.currentTime;
+
+      const master = ctx.createGain();
+      master.gain.setValueAtTime(vol(0.22), t);
+      master.connect(ctx.destination);
+
+      function ding(freq, start, dur) {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = "sine";
+        o.frequency.setValueAtTime(freq, start);
+        g.gain.setValueAtTime(0.0001, start);
+        g.gain.exponentialRampToValueAtTime(vol(0.18), start + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+        o.connect(g); g.connect(master);
+        o.start(start);
+        o.stop(start + dur + 0.02);
+      }
+
+      ding(1046.5, t, 0.22);
+      ding(1318.5, t + 0.08, 0.22);
+    }
+
+    const lottoSetsEl = document.getElementById("lottoSets");
+    const lottoBtnPick = document.getElementById("lottoBtnPick");
+    const lottoBtnCopy = document.getElementById("lottoBtnCopy");
+    const lottoBtnReset = document.getElementById("lottoBtnReset");
+    const lottoMetaEl = document.getElementById("lottoMeta");
+    const lottoToastEl = document.getElementById("lottoToast");
+
+    const lottoHistoryListEl = document.getElementById("lottoHistoryList");
+    const lottoBtnCopyHistory = document.getElementById("lottoBtnCopyHistory");
+    const lottoBtnClearHistory = document.getElementById("lottoBtnClearHistory");
+
+    let lottoLastResult = [];
+    let lottoIsDrawing = false;
+
+    function pickOneSet() {
+      const s = new Set();
+      while (s.size < 6) s.add(Math.floor(Math.random() * 45) + 1);
+      return [...s].sort((a, b) => a - b);
+    }
+    function generateFiveSets() { return Array.from({ length: 5 }, pickOneSet); }
+
+    function renderPlaceholders() {
+      lottoSetsEl.innerHTML = "";
+      for (let setIdx = 0; setIdx < 5; setIdx++) {
+        const div = document.createElement("div");
+        div.className = "lotto-set";
+        div.innerHTML = `
+          <div class="lotto-set-title">
+            <span>SET ${setIdx + 1}</span>
+            <span class="lotto-badge" id="lotto-badge-${setIdx}">대기</span>
+          </div>
+          <div class="lotto-balls" id="lotto-balls-${setIdx}">
+            ${Array.from({length: 6}).map((_, nIdx) => `
+              <div class="lotto-ball pending" id="lotto-ball-${setIdx}-${nIdx}">•</div>
+            `).join("")}
+          </div>
+        `;
+        lottoSetsEl.appendChild(div);
+      }
+    }
+    function setBadge(setIdx, text) {
+      const el = document.getElementById(`lotto-badge-${setIdx}`);
+      if (el) el.textContent = text;
+    }
+    function revealBall(setIdx, numIdx, value) {
+      const el = document.getElementById(`lotto-ball-${setIdx}-${numIdx}`);
+      if (!el) return;
+      el.classList.remove("pending");
+      el.classList.add("reveal");
+      el.textContent = value;
+      setTimeout(() => el.classList.remove("reveal"), 260);
+    }
+    function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
+    function setToast(msg) { lottoToastEl.textContent = msg || ""; }
+
+    function formatNow() {
+      return new Date().toLocaleString(); // 환경별 포맷 차이 있을 수 있음(확실한게 아니야)
+    }
+    function formatFiveSetsForCopy(fiveSets) {
+      return fiveSets.map((set, i) => `SET ${i + 1}: ${set.join(", ")}`).join("\n");
+    }
+
+    async function runDrawSequence() {
+      if (lottoIsDrawing) return;
+      lottoIsDrawing = true;
+
+      await ensureAudio();
+
+      lottoBtnPick.disabled = true;
+      lottoBtnReset.disabled = true;
+      lottoBtnCopy.disabled = true;
+      setToast("추첨 중… 🔄");
+
+      const result = generateFiveSets();
+      renderPlaceholders();
+
+      const totalNumbers = 5 * 6;
+      const perNumberMs = 140;
+      const perSetGapMs = 260;
+      const totalMs = (totalNumbers * perNumberMs) + (4 * perSetGapMs) + 500;
+      const rollingSec = Math.max(5.0, totalMs / 1000);
+
+      const rolling = startRollingSound(rollingSec, 0.34);
+
+      for (let s = 0; s < 5; s++) {
+        setBadge(s, "추첨 중");
+        await sleep(180);
+
+        for (let n = 0; n < 6; n++) {
+          try { playTick(); } catch {}
+          revealBall(s, n, result[s][n]);
+          await sleep(perNumberMs);
+        }
+        setBadge(s, "완료");
+        if (s < 4) await sleep(perSetGapMs);
+      }
+
+      try { rolling?.stop?.(); } catch {}
+      try { playFinishChime(); } catch {}
+
+      lottoLastResult = result;
+
+      const ts = formatNow();
+      lottoMetaEl.textContent = `생성 시간: ${ts}`;
+      setToast("완료! 🎉");
+
+      addHistory({ id: cryptoRandomId(), createdAt: ts, sets: lottoLastResult });
+
+      lottoBtnPick.disabled = false;
+      lottoBtnReset.disabled = false;
+      lottoBtnCopy.disabled = false;
+      lottoIsDrawing = false;
+    }
+
+    lottoBtnPick.addEventListener("click", () => {
+      runDrawSequence().catch(() => {
+        lottoIsDrawing = false;
+        lottoBtnPick.disabled = false;
+        lottoBtnReset.disabled = false;
+        setToast("오류가 발생했어요. 다시 시도해주세요.");
+      });
+    });
+
+    lottoBtnCopy.addEventListener("click", async () => {
+      if (!lottoLastResult.length) return;
+      const text = formatFiveSetsForCopy(lottoLastResult);
+      try {
+        await navigator.clipboard.writeText(text);
+        setToast("현재 결과 5세트가 복사되었습니다.");
+      } catch {
+        setToast("복사 실패. 브라우저 권한 설정을 확인하거나 수동으로 복사해주세요.");
+      }
+    });
+
+    lottoBtnReset.addEventListener("click", () => {
+      if (lottoIsDrawing) return;
+      lottoSetsEl.innerHTML = "";
+      lottoLastResult = [];
+      lottoBtnCopy.disabled = true;
+      lottoMetaEl.textContent = "아직 생성되지 않았습니다.";
+      setToast("");
+    });
+
+    const STORAGE_KEY = "lotto_history_v1";
+    renderHistory();
+
+    lottoBtnCopyHistory.addEventListener("click", async () => {
+      const history = loadHistory();
+      if (!history.length) return;
+
+      const text = history.map((item, idx) => {
+        const header = `#${history.length - idx} (${item.createdAt})`;
+        return header + "\n" + formatFiveSetsForCopy(item.sets);
+      }).join("\n\n");
+
+      try {
+        await navigator.clipboard.writeText(text);
+        setToast("생성 기록 전체가 복사되었습니다.");
+      } catch {
+        setToast("복사 실패. 브라우저 권한 설정을 확인하거나 수동으로 복사해주세요.");
+      }
+    });
+
+    lottoBtnClearHistory.addEventListener("click", () => {
+      const ok = confirm("생성 기록을 전부 삭제할까요? (되돌릴 수 없음)");
+      if (!ok) return;
+      localStorage.removeItem(STORAGE_KEY);
+      renderHistory();
+      setToast("생성 기록이 모두 삭제되었습니다.");
+    });
+
+    function loadHistory() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+        return parsed;
+      } catch {
+        return [];
+      }
+    }
+    function saveHistory(history) { localStorage.setItem(STORAGE_KEY, JSON.stringify(history)); }
+    function addHistory(item) {
+      const history = loadHistory();
+      history.unshift(item);
+      saveHistory(history.slice(0, 50));
+      renderHistory();
+    }
+    function deleteHistory(id) {
+      const history = loadHistory().filter(x => x.id !== id);
+      saveHistory(history);
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const history = loadHistory();
+      lottoHistoryListEl.innerHTML = "";
+      history.forEach((item, index) => {
+        const card = document.createElement("div");
+        card.className = "lotto-history-item";
+        const numberLabel = `#${history.length - index}`;
+
+        card.innerHTML = `
+          <div class="lotto-history-meta">
+            <span>${numberLabel}</span>
+            <span>${escapeHtml(item.createdAt)}</span>
+          </div>
+
+          <div class="lotto-history-sets">
+            ${item.sets.map((set, i) => `
+              <div class="lotto-mini-set">
+                <div class="label">SET ${i + 1}</div>
+                <div class="lotto-mini-balls">
+                  ${set.map(n => `<div class="lotto-mini-ball">${n}</div>`).join("")}
+                </div>
+              </div>
+            `).join("")}
+          </div>
+
+          <div class="lotto-row-actions">
+            <button class="lotto-btn secondary" type="button" data-action="copy" data-id="${item.id}">📋 이 기록 복사</button>
+            <button class="lotto-btn secondary" type="button" data-action="delete" data-id="${item.id}">🗑️ 삭제</button>
+          </div>
+        `;
+        lottoHistoryListEl.appendChild(card);
+      });
+
+      const hasHistory = history.length > 0;
+      lottoBtnCopyHistory.disabled = !hasHistory;
+      lottoBtnClearHistory.disabled = !hasHistory;
+
+      lottoHistoryListEl.querySelectorAll("button[data-action]").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+          const action = e.currentTarget.getAttribute("data-action");
+          const id = e.currentTarget.getAttribute("data-id");
+          const history = loadHistory();
+          const item = history.find(x => x.id === id);
+          if (!item) return;
+
+          if (action === "delete") {
+            deleteHistory(id);
+            setToast("기록 1개를 삭제했습니다.");
+            return;
+          }
+
+          if (action === "copy") {
+            const text = `(${item.createdAt})\n` + formatFiveSetsForCopy(item.sets);
+            try {
+              await navigator.clipboard.writeText(text);
+              setToast("선택한 기록이 복사되었습니다.");
+            } catch {
+              setToast("복사 실패. 브라우저 권한 설정을 확인하거나 수동으로 복사해주세요.");
+            }
+          }
+        });
+      });
+    }
+
+    function cryptoRandomId() {
+      if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+      return "id_" + Math.random().toString(16).slice(2) + "_" + Date.now(); // 확실한게 아니야
+    }
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    /***********************
+     * Hotkeys
+     ************************/
+    window.addEventListener('keydown', (e) => {
+      const key = e.key.toLowerCase();
+
+      if(currentView === 'rps' && key === 'r'){ e.preventDefault(); resetRps(); }
+      if(currentView === 'omok' && key === 'u'){ e.preventDefault(); undo(); }
+      if(currentView === 'omok' && key === 'n'){ e.preventDefault(); newBoard(); }
+
+      if(key === 'escape'){ setView('home'); }
+    });
+
+    /***********************
+     * Init
+     ************************/
+    renderRps();
+    newBoard();
+    setView('home');
+  </script>
 </body>
 </html>
