@@ -7,32 +7,40 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="점심·저녁 메뉴를 랜덤으로 추천하는 오늘 뭐 먹지 미니게임입니다.">
-  <title>미니게임 천국 | 오늘 뭐 먹지</title>
+  <title data-i18n="title.menu">미니게임 천국 | 오늘 뭐 먹지</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="wrap">
     <header>
       <div class="brand">
-        <div class="title">오늘 뭐 먹지</div>
-        <div class="sub">점심·저녁 메뉴를 랜덤으로 추천합니다.</div>
+        <div class="title" data-i18n="menu.title">오늘 뭐 먹지</div>
+        <div class="sub" data-i18n="menu.sub">점심·저녁 메뉴를 랜덤으로 추천합니다.</div>
       </div>
       <div class="top-controls">
-    <div class="pill">현재: <b id="routeName">오늘 뭐 먹지</b></div>
+        <div class="pill"><span data-i18n="label.current">현재:</span> <b id="routeName">오늘 뭐 먹지</b></div>
 
-    <label class="toggle" title="효과음 ON/OFF">
-      <input id="sfxToggle" type="checkbox" checked>
-      SFX
-    </label>
+        <label class="toggle" title="효과음 ON/OFF">
+          <input id="sfxToggle" type="checkbox" checked>
+          SFX
+        </label>
 
-    <div class="range" title="효과음 볼륨">
-      볼륨
-      <input id="sfxVol" type="range" min="0" max="100" value="70">
-    </div>
+        <div class="range" title="효과음 볼륨">
+          <span data-i18n="label.volume">볼륨</span>
+          <input id="sfxVol" type="range" min="0" max="100" value="70">
+        </div>
 
-    <button class="btn ghost" id="themeToggle" type="button">🌙 다크모드</button>
-    <button class="btn ghost" onclick="location.href='index.html'">← 메인으로</button>
-  </div>
+        <label class="lang-select" title="Language">
+          <span data-i18n="label.language">언어</span>
+          <select id="langSelect">
+            <option value="ko">한국어</option>
+            <option value="en">English</option>
+          </select>
+        </label>
+
+        <button class="btn ghost" id="themeToggle" type="button">🌙 다크모드</button>
+        <a class="btn ghost" href="index.html" data-i18n="nav.backHome">← 메인으로</a>
+      </div>
 </header>
 
     <section class="card">
@@ -43,10 +51,10 @@
         </div>
       </div>
       <div class="bd" style="text-align:center;">
-        <div id="menuResult" style="font-size:26px; font-weight:900; margin:30px 0;">
+        <div id="menuResult" style="font-size:26px; font-weight:900; margin:30px 0;" data-i18n="menu.result.prompt">
           버튼을 눌러주세요
         </div>
-        <button class="btn primary" id="pickMenu">🍽️ 메뉴 추천</button>
+        <button class="btn primary" id="pickMenu" data-i18n="menu.button.pick">🍽️ 메뉴 추천</button>
       </div>
     </section>
 
@@ -54,23 +62,23 @@
       <div class="card">
         <div class="hd">
           <div>
-            <h2>추천 가이드</h2>
-            <p>추천 방식과 활용 팁을 확인하세요.</p>
+            <h2 data-i18n="menu.guide.title">추천 가이드</h2>
+            <p data-i18n="menu.guide.desc">추천 방식과 활용 팁을 확인하세요.</p>
           </div>
         </div>
         <div class="bd">
           <div class="panel">
-            <div style="font-weight:800; margin-bottom:6px;">추천 방식</div>
+            <div style="font-weight:800; margin-bottom:6px;" data-i18n="menu.guide.rules.title">추천 방식</div>
             <ul class="info-list">
-              <li>메뉴 목록에서 무작위로 하나를 선택합니다.</li>
+              <li data-i18n="menu.guide.rules.li1">메뉴 목록에서 무작위로 하나를 선택합니다.</li>
             </ul>
 
             <div class="hr"></div>
 
-            <div style="font-weight:800; margin-bottom:6px;">활용 팁</div>
+            <div style="font-weight:800; margin-bottom:6px;" data-i18n="menu.guide.tips.title">활용 팁</div>
             <ul class="info-list">
-              <li>팀 점심 회의 전에 버튼을 눌러 빠르게 결정할 수 있습니다.</li>
-              <li>여러 번 추천을 눌러 후보를 3~5개로 좁혀 보세요.</li>
+              <li data-i18n="menu.guide.tips.li1">팀 점심 회의 전에 버튼을 눌러 빠르게 결정할 수 있습니다.</li>
+              <li data-i18n="menu.guide.tips.li2">여러 번 추천을 눌러 후보를 3~5개로 좁혀 보세요.</li>
             </ul>
           </div>
         </div>
@@ -79,19 +87,19 @@
 
     <footer class="site-footer">
       <div class="footer-links">
-        <a href="index.html">홈</a>
-        <a href="about.html">사이트 소개</a>
-        <a href="contact.html">문의</a>
-        <a href="privacy.html">개인정보처리방침</a>
-        <a href="terms.html">이용약관</a>
+        <a href="index.html" data-i18n="nav.home">홈</a>
+        <a href="about.html" data-i18n="nav.about">사이트 소개</a>
+        <a href="contact.html" data-i18n="nav.contact">문의</a>
+        <a href="privacy.html" data-i18n="nav.privacy">개인정보처리방침</a>
+        <a href="terms.html" data-i18n="nav.terms">이용약관</a>
       </div>
-      <div class="footer-meta">© Mini Game Heaven</div>
+      <div class="footer-meta" data-i18n="footer.copyright">© Mini Game Heaven</div>
     </footer>
   </div>
 
   <script src="shared.js"></script>
 <script>
-  initHeader("오늘 뭐 먹지");
+  initHeader("route.menu");
 
     // 메뉴 목록(필요하면 자유롭게 추가/수정)
   const menus = [

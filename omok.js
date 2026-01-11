@@ -1,4 +1,4 @@
-initHeader("오목");
+initHeader("route.omok");
 
 const OMOK_LEVEL_KEY = "omok_ai_level_v1";
 
@@ -21,7 +21,8 @@ if(savedLevel && ["easy","normal","hard"].includes(savedLevel)){
 }
 aiLevelEl.addEventListener("change", () => {
   localStorage.setItem(OMOK_LEVEL_KEY, aiLevelEl.value);
-  omokStatus.textContent = `난이도: ${aiLevelEl.value === "easy" ? "쉬움" : aiLevelEl.value === "normal" ? "보통" : "어려움"}`;
+  const levelLabel = aiLevelEl.value === "easy" ? t("omok.level.easy") : aiLevelEl.value === "normal" ? t("omok.level.normal") : t("omok.level.hard");
+  omokStatus.textContent = `${t("omok.level")} ${levelLabel}`;
   setTimeout(() => { if(!gameOver) omokStatus.textContent = ""; }, 900);
 });
 
@@ -69,20 +70,20 @@ function newBoard(){
 function renderTurn(){
   const isUserTurn = turn === BLACK;
   turnDot.className = 'turn-dot ' + (isUserTurn ? 'black' : 'white');
-  turnText.textContent = isUserTurn ? '내 차례(흑)' : 'AI 차례(백)';
+  turnText.textContent = isUserTurn ? t("omok.turn.user") : t("omok.turn.ai");
 }
 
 function renderMoves(){
   moveList.innerHTML = '';
   if(moves.length === 0){
     const li = document.createElement('li');
-    li.textContent = '아직 착수 없음';
+    li.textContent = t("omok.history.empty");
     moveList.appendChild(li);
     return;
   }
   moves.forEach((m, idx) => {
     const li = document.createElement('li');
-    const p = m.player === BLACK ? '흑(나)' : '백(AI)';
+    const p = m.player === BLACK ? t("omok.player.black") : t("omok.player.white");
     const col = String.fromCharCode('A'.charCodeAt(0) + m.x);
     const row = (m.y + 1);
     li.textContent = `${idx+1}. ${p} — ${col}${row}`;
@@ -188,7 +189,7 @@ function drawOmok(_force=false){
     ctx.font = `900 ${Math.floor(canvas.width*0.055)}px ui-sans-serif, system-ui`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const msg = winner === BLACK ? '내가 승리!' : 'AI 승리!';
+    const msg = winner === BLACK ? t("omok.win.user") : t("omok.win.ai");
     ctx.fillText(msg, canvas.width/2, canvas.height/2);
     ctx.restore();
   }
@@ -320,7 +321,7 @@ function isBoardFull(){
 async function endGame(winPlayer){
   gameOver = true;
   winner = winPlayer;
-  omokStatus.textContent = '게임 종료';
+  omokStatus.textContent = t("omok.status.over");
   scheduleOmokDraw();
   if(winPlayer === BLACK){ try{ sfxWinFanfare(); }catch{} }
   if(winPlayer === WHITE){ try{ sfxLoseSad(); }catch{} }
@@ -470,7 +471,7 @@ async function aiTurn(){
     return;
   }
   if(isBoardFull()){
-    omokStatus.textContent = "무승부";
+    omokStatus.textContent = t("omok.status.draw");
     gameOver = true;
     scheduleOmokDraw();
     aiBusy = false;
@@ -490,7 +491,16 @@ async function userPlace(x,y){
   // RENJU: 흑 금수(33/44/장목) 판정
   const rj = renjuJudgeBlackMove(x, y);
   if(rj.forbidden){
-    omokStatus.textContent = `금수입니다 (${rj.reason})`;
+    const reasonMap = {
+      "범위 밖": "omok.reason.outside",
+      "이미 돌이 있음": "omok.reason.occupied",
+      "장목(6목 이상)": "omok.reason.overline",
+      "44(사사)": "omok.reason.doubleFour",
+      "33(삼삼)": "omok.reason.doubleThree"
+    };
+    const reasonKey = reasonMap[rj.reason] || rj.reason;
+    const reasonText = reasonKey.startsWith("omok.reason.") ? t(reasonKey) : reasonKey;
+    omokStatus.textContent = t("omok.status.forbidden", { reason: reasonText });
     setTimeout(() => { if(!gameOver) omokStatus.textContent = ""; }, 900);
     return;
   }
@@ -504,7 +514,7 @@ async function userPlace(x,y){
   }
 
   if(isBoardFull()){
-    omokStatus.textContent = "무승부";
+    omokStatus.textContent = t("omok.status.draw");
     gameOver = true;
     scheduleOmokDraw();
     return;

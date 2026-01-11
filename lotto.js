@@ -1,4 +1,4 @@
-initHeader("로또");
+initHeader("route.lotto");
 
 const lottoSetsEl = document.getElementById("lottoSets");
 const lottoBtnPick = document.getElementById("lottoBtnPick");
@@ -29,7 +29,7 @@ function renderPlaceholders() {
     div.innerHTML = `
       <div class="lotto-set-title">
         <span>SET ${setIdx + 1}</span>
-        <span class="lotto-badge" id="lotto-badge-${setIdx}">대기</span>
+        <span class="lotto-badge" id="lotto-badge-${setIdx}">${t("lotto.badge.wait")}</span>
       </div>
       <div class="lotto-balls" id="lotto-balls-${setIdx}">
         ${Array.from({length: 6}).map((_, nIdx) => `
@@ -71,7 +71,7 @@ async function runDrawSequence() {
   lottoBtnPick.disabled = true;
   lottoBtnReset.disabled = true;
   lottoBtnCopy.disabled = true;
-  setToast("추첨 중… 🔄");
+  setToast(t("lotto.toast.drawing"));
 
   const result = generateFiveSets();
   renderPlaceholders();
@@ -85,7 +85,7 @@ async function runDrawSequence() {
   const rolling = startRollingSound(rollingSec, 0.34);
 
   for (let s = 0; s < 5; s++) {
-    setBadge(s, "추첨 중");
+    setBadge(s, t("lotto.badge.drawing"));
     await sleep(180);
 
     for (let n = 0; n < 6; n++) {
@@ -93,7 +93,7 @@ async function runDrawSequence() {
       revealBall(s, n, result[s][n]);
       await sleep(perNumberMs);
     }
-    setBadge(s, "완료");
+    setBadge(s, t("lotto.badge.done"));
     if (s < 4) await sleep(perSetGapMs);
   }
 
@@ -103,8 +103,8 @@ async function runDrawSequence() {
   lottoLastResult = result;
 
   const ts = formatNow();
-  lottoMetaEl.textContent = `생성 시간: ${ts}`;
-  setToast("완료! 🎉");
+  lottoMetaEl.textContent = t("lotto.meta.time", { time: ts });
+  setToast(t("lotto.toast.done"));
 
   addHistory({ id: cryptoRandomId(), createdAt: ts, sets: lottoLastResult });
 
@@ -119,7 +119,7 @@ lottoBtnPick.addEventListener("click", () => {
     lottoIsDrawing = false;
     lottoBtnPick.disabled = false;
     lottoBtnReset.disabled = false;
-    setToast("오류가 발생했어요. 다시 시도해주세요.");
+    setToast(t("lotto.toast.error"));
   });
 });
 
@@ -128,9 +128,9 @@ lottoBtnCopy.addEventListener("click", async () => {
   const text = formatFiveSetsForCopy(lottoLastResult);
   try {
     await navigator.clipboard.writeText(text);
-    setToast("현재 결과 5세트가 복사되었습니다.");
+    setToast(t("lotto.toast.copyCurrent"));
   } catch {
-    setToast("복사 실패. 브라우저 권한 설정을 확인하거나 수동으로 복사해주세요.");
+    setToast(t("lotto.toast.copyFail"));
   }
 });
 
@@ -139,7 +139,7 @@ lottoBtnReset.addEventListener("click", () => {
   lottoSetsEl.innerHTML = "";
   lottoLastResult = [];
   lottoBtnCopy.disabled = true;
-  lottoMetaEl.textContent = "아직 생성되지 않았습니다.";
+  lottoMetaEl.textContent = t("lotto.meta.empty");
   setToast("");
 });
 
@@ -157,18 +157,18 @@ lottoBtnCopyHistory.addEventListener("click", async () => {
 
   try {
     await navigator.clipboard.writeText(text);
-    setToast("생성 기록 전체가 복사되었습니다.");
+    setToast(t("lotto.toast.copied"));
   } catch {
-    setToast("복사 실패. 브라우저 권한 설정을 확인하거나 수동으로 복사해주세요.");
+    setToast(t("lotto.toast.copyFail"));
   }
 });
 
 lottoBtnClearHistory.addEventListener("click", () => {
-  const ok = confirm("생성 기록을 전부 삭제할까요? (되돌릴 수 없음)");
+  const ok = confirm(t("lotto.confirm.clear"));
   if (!ok) return;
   localStorage.removeItem(STORAGE_KEY);
   renderHistory();
-  setToast("생성 기록이 모두 삭제되었습니다.");
+  setToast(t("lotto.toast.cleared"));
 });
 
 function loadHistory() {
@@ -221,8 +221,8 @@ function renderHistory() {
       </div>
 
       <div class="lotto-row-actions">
-        <button class="lotto-btn secondary" type="button" data-action="copy" data-id="${item.id}">📋 이 기록 복사</button>
-        <button class="lotto-btn secondary" type="button" data-action="delete" data-id="${item.id}">🗑️ 삭제</button>
+        <button class="lotto-btn secondary" type="button" data-action="copy" data-id="${item.id}">${t("lotto.btn.copyItem")}</button>
+        <button class="lotto-btn secondary" type="button" data-action="delete" data-id="${item.id}">${t("lotto.btn.deleteItem")}</button>
       </div>
     `;
     lottoHistoryListEl.appendChild(card);
@@ -242,7 +242,7 @@ function renderHistory() {
 
       if (action === "delete") {
         deleteHistory(id);
-        setToast("기록 1개를 삭제했습니다.");
+        setToast(t("lotto.toast.deletedOne"));
         return;
       }
 
@@ -250,9 +250,9 @@ function renderHistory() {
         const text = `(${item.createdAt})\n` + formatFiveSetsForCopy(item.sets);
         try {
           await navigator.clipboard.writeText(text);
-          setToast("선택한 기록이 복사되었습니다.");
+          setToast(t("lotto.toast.copiedOne"));
         } catch {
-          setToast("복사 실패. 브라우저 권한 설정을 확인하거나 수동으로 복사해주세요.");
+          setToast(t("lotto.toast.copyFail"));
         }
       }
     });

@@ -1,11 +1,25 @@
-initHeader("가위바위보");
+initHeader("route.rps");
 
 const RPS_KEY = 'mini_rps_v2';
 const rpsMap = {
-  scissors: { label: '가위', emoji: '✌️' },
-  rock:     { label: '바위', emoji: '✊' },
-  paper:    { label: '보',   emoji: '🖐️' }
+  scissors: { label: t('rps.choice.scissors'), emoji: '✌️' },
+  rock:     { label: t('rps.choice.rock'), emoji: '✊' },
+  paper:    { label: t('rps.choice.paper'), emoji: '🖐️' }
 };
+
+function syncRpsLabels(){
+  rpsMap.scissors.label = t('rps.choice.scissors');
+  rpsMap.rock.label = t('rps.choice.rock');
+  rpsMap.paper.label = t('rps.choice.paper');
+}
+
+window.addEventListener("langchange", () => {
+  syncRpsLabels();
+  renderRps();
+  if(myChoiceEl.textContent === '—' && cpuChoiceEl.textContent === '—'){
+    rpsResultEl.textContent = t('rps.result.prompt');
+  }
+});
 const beats = { scissors: 'paper', rock: 'scissors', paper: 'rock' };
 
 const myChoiceEl = document.getElementById('myChoice');
@@ -44,7 +58,7 @@ function renderRps(){
   histList.innerHTML = '';
   if(st.hist.length === 0){
     const li = document.createElement('li');
-    li.textContent = '아직 기록이 없어요.';
+    li.textContent = t('rps.history.empty');
     histList.appendChild(li);
     return;
   }
@@ -73,7 +87,7 @@ async function playRps(me){
 
   rpsButtons.forEach(b => b.disabled = true);
   rpsResultEl.className = 'result';
-  rpsResultEl.textContent = '상대 선택 중…';
+  rpsResultEl.textContent = t('rps.result.wait');
 
   myChoiceEl.textContent = rpsMap[me].emoji;
 
@@ -107,7 +121,7 @@ async function playRps(me){
 
   const outcome = judge(me, cpu);
   rpsResultEl.className = 'result ' + outcome;
-  rpsResultEl.textContent = outcome === 'win' ? '승리!' : outcome === 'draw' ? '무승부!' : '패배!';
+  rpsResultEl.textContent = outcome === 'win' ? t('rps.result.win') : outcome === 'draw' ? t('rps.result.draw') : t('rps.result.lose');
 
   if(outcome === 'win') { try{ sfxWinFanfare(); }catch{} }
   if(outcome === 'lose'){ try{ sfxLoseSad(); }catch{} }
@@ -118,8 +132,9 @@ async function playRps(me){
   if(outcome === 'lose') st.l++;
 
   const ts = new Date();
-  const t = ts.toLocaleTimeString('ko-KR', { hour:'2-digit', minute:'2-digit' });
-  const line = `[${t}] 나: ${rpsMap[me].label} / 상대: ${rpsMap[cpu].label} → ${outcome === 'win' ? '승' : outcome === 'draw' ? '무' : '패'}`;
+  const locale = document.documentElement.getAttribute("data-lang") === "en" ? "en-US" : "ko-KR";
+  const timeLabel = ts.toLocaleTimeString(locale, { hour:'2-digit', minute:'2-digit' });
+  const line = `[${timeLabel}] ${t('rps.log.me')}: ${rpsMap[me].label} / ${t('rps.log.cpu')}: ${rpsMap[cpu].label} → ${outcome === 'win' ? t('rps.log.win') : outcome === 'draw' ? t('rps.log.draw') : t('rps.log.lose')}`;
   st.hist.unshift(line);
   st.hist = st.hist.slice(0, 50);
   saveRps(st);
@@ -134,7 +149,7 @@ function resetRps(){
   myChoiceEl.textContent = '—';
   cpuChoiceEl.textContent = '—';
   rpsResultEl.className = 'result';
-  rpsResultEl.textContent = '선택해 주세요.';
+  rpsResultEl.textContent = t('rps.result.prompt');
   renderRps();
 }
 

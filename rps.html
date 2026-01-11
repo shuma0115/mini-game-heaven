@@ -7,19 +7,19 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="가위바위보 미니게임과 규칙, 전략 팁, 전적 기록을 제공하는 페이지입니다.">
-  <title>미니게임 천국 | 가위바위보</title>
+  <title data-i18n="title.rps">미니게임 천국 | 가위바위보</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="wrap">
     <header>
       <div class="brand">
-        <div class="title">미니게임 천국</div>
-        <div class="sub">가위바위보</div>
+        <div class="title" data-i18n="site.name">미니게임 천국</div>
+        <div class="sub" data-i18n="route.rps">가위바위보</div>
       </div>
 
       <div class="top-controls">
-        <div class="pill">현재: <b id="routeName">가위바위보</b></div>
+        <div class="pill"><span data-i18n="label.current">현재:</span> <b id="routeName">가위바위보</b></div>
 
         <label class="toggle" title="효과음 ON/OFF">
           <input id="sfxToggle" type="checkbox" checked>
@@ -27,9 +27,16 @@
         </label>
 
         <div class="range" title="효과음 볼륨">
-          볼륨
+          <span data-i18n="label.volume">볼륨</span>
           <input id="sfxVol" type="range" min="0" max="100" value="70">
         </div>
+        <label class="lang-select" title="Language">
+          <span data-i18n="label.language">언어</span>
+          <select id="langSelect">
+            <option value="ko">한국어</option>
+            <option value="en">English</option>
+          </select>
+        </label>
 
         <button class="btn ghost" id="themeToggle" type="button" data-theme-toggle>🌙 다크모드</button>
       </div>
@@ -39,45 +46,45 @@
       <div class="card">
         <div class="hd">
           <div>
-            <h2>가위바위보</h2>
-            <p>가위, 바위, 보 중 하나를 선택해 상대와 승부를 겨루는 게임입니다. 같은 선택이면 무승부, 상대의 선택을 이기면 승리합니다.</p>
+            <h2 data-i18n="rps.title">가위바위보</h2>
+            <p data-i18n="rps.desc">가위, 바위, 보 중 하나를 선택해 상대와 승부를 겨루는 게임입니다. 같은 선택이면 무승부, 상대의 선택을 이기면 승리합니다.</p>
           </div>
           <div class="split">
-            <a class="btn ghost" href="index.html">← 메인으로</a>
-            <button class="btn danger" id="rpsReset">기록 초기화</button>
+            <a class="btn ghost" href="index.html" data-i18n="nav.backHome">← 메인으로</a>
+            <button class="btn danger" id="rpsReset" data-i18n="rps.reset">기록 초기화</button>
           </div>
         </div>
         <div class="bd">
           <div class="btnrow" style="margin-bottom:12px;">
-            <button class="btn primary" data-rps="scissors">가위 ✌️</button>
-            <button class="btn primary" data-rps="rock">바위 ✊</button>
-            <button class="btn primary" data-rps="paper">보 🖐️</button>
+            <button class="btn primary" data-rps="scissors" data-i18n="rps.button.scissors">가위 ✌️</button>
+            <button class="btn primary" data-rps="rock" data-i18n="rps.button.rock">바위 ✊</button>
+            <button class="btn primary" data-rps="paper" data-i18n="rps.button.paper">보 🖐️</button>
           </div>
 
           <div class="rps-area">
             <div class="rps-box">
-              <div class="rps-label">내 선택</div>
+              <div class="rps-label" data-i18n="rps.my">내 선택</div>
               <div class="rps-choice" id="myChoice">—</div>
-              <div class="rps-label">상대</div>
+              <div class="rps-label" data-i18n="rps.cpu">상대</div>
               <div class="rps-choice" id="cpuChoice">—</div>
-              <div class="result" id="rpsResult">선택해 주세요.</div>
+              <div class="result" id="rpsResult" data-i18n="rps.result.prompt">선택해 주세요.</div>
 
               <div class="score">
-                <div class="stat">승: <b id="win">0</b></div>
-                <div class="stat">무: <b id="draw">0</b></div>
-                <div class="stat">패: <b id="lose">0</b></div>
+                <div class="stat"><span data-i18n="rps.win">승</span>: <b id="win">0</b></div>
+                <div class="stat"><span data-i18n="rps.draw">무</span>: <b id="draw">0</b></div>
+                <div class="stat"><span data-i18n="rps.lose">패</span>: <b id="lose">0</b></div>
               </div>
-              <div class="small" style="margin-top:10px;">
+              <div class="small" style="margin-top:10px;" data-i18n-html="rps.tip.html">
                 팁: <span class="kbd">R</span> 기록 초기화 / <span class="kbd">ESC</span> 메인
               </div>
             </div>
 
             <div class="rps-box">
-              <div class="rps-label" style="margin-bottom:8px;">승부 기록</div>
+              <div class="rps-label" style="margin-bottom:8px;" data-i18n="rps.history.title">승부 기록</div>
               <div class="history">
                 <ul id="histList"></ul>
               </div>
-              <div class="small" style="margin-top:10px;">
+              <div class="small" style="margin-top:10px;" data-i18n="rps.history.hint">
                 기록은 로컬스토리지에 저장됩니다.
               </div>
             </div>
@@ -90,25 +97,25 @@
       <div class="card">
         <div class="hd">
           <div>
-            <h2>게임 가이드</h2>
-            <p>기본 규칙, 승리 조건, 실전 팁을 한눈에 확인하세요.</p>
+            <h2 data-i18n="rps.guide.title">게임 가이드</h2>
+            <p data-i18n="rps.guide.desc">기본 규칙, 승리 조건, 실전 팁을 한눈에 확인하세요.</p>
           </div>
         </div>
         <div class="bd">
           <div class="panel">
-            <div style="font-weight:800; margin-bottom:6px;">규칙 요약</div>
+            <div style="font-weight:800; margin-bottom:6px;" data-i18n="rps.guide.rules.title">규칙 요약</div>
             <ul class="info-list">
-              <li>가위는 보를 이기고, 보는 바위를 이기며, 바위는 가위를 이깁니다.</li>
-              <li>같은 선택이면 무승부가 됩니다.</li>
-              <li>전적은 브라우저 로컬스토리지에 저장됩니다.</li>
+              <li data-i18n="rps.guide.rules.li1">가위는 보를 이기고, 보는 바위를 이기며, 바위는 가위를 이깁니다.</li>
+              <li data-i18n="rps.guide.rules.li2">같은 선택이면 무승부가 됩니다.</li>
+              <li data-i18n="rps.guide.rules.li3">전적은 브라우저 로컬스토리지에 저장됩니다.</li>
             </ul>
 
             <div class="hr"></div>
 
-            <div style="font-weight:800; margin-bottom:6px;">전략 팁</div>
+            <div style="font-weight:800; margin-bottom:6px;" data-i18n="rps.guide.tips.title">전략 팁</div>
             <ul class="info-list">
-              <li>연속 패배 후에는 패턴을 끊는 선택을 시도해 보세요.</li>
-              <li>기록을 확인하며 선호 패턴을 분석해 볼 수 있습니다.</li>
+              <li data-i18n="rps.guide.tips.li1">연속 패배 후에는 패턴을 끊는 선택을 시도해 보세요.</li>
+              <li data-i18n="rps.guide.tips.li2">기록을 확인하며 선호 패턴을 분석해 볼 수 있습니다.</li>
             </ul>
           </div>
         </div>
@@ -117,13 +124,13 @@
 
     <footer class="site-footer">
       <div class="footer-links">
-        <a href="index.html">홈</a>
-        <a href="about.html">사이트 소개</a>
-        <a href="contact.html">문의</a>
-        <a href="privacy.html">개인정보처리방침</a>
-        <a href="terms.html">이용약관</a>
+        <a href="index.html" data-i18n="nav.home">홈</a>
+        <a href="about.html" data-i18n="nav.about">사이트 소개</a>
+        <a href="contact.html" data-i18n="nav.contact">문의</a>
+        <a href="privacy.html" data-i18n="nav.privacy">개인정보처리방침</a>
+        <a href="terms.html" data-i18n="nav.terms">이용약관</a>
       </div>
-      <div class="footer-meta">© Mini Game Heaven</div>
+      <div class="footer-meta" data-i18n="footer.copyright">© Mini Game Heaven</div>
     </footer>
   </div>
 

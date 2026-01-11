@@ -7,20 +7,27 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="미니게임 천국 이용약관과 서비스 이용 기준을 안내합니다.">
-  <title>미니게임 천국 | 이용약관</title>
+  <title data-i18n="title.terms">미니게임 천국 | 이용약관</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="wrap">
     <header>
       <div class="brand">
-        <div class="title">미니게임 천국</div>
-        <div class="sub">이용약관</div>
+        <div class="title" data-i18n="site.name">미니게임 천국</div>
+        <div class="sub" data-i18n="route.terms">이용약관</div>
       </div>
 
       <div class="top-controls">
-        <div class="pill">현재: <b id="routeName">이용약관</b></div>
-        <a class="btn ghost" href="index.html">← 메인으로</a>
+        <div class="pill"><span data-i18n="label.current">현재:</span> <b id="routeName">이용약관</b></div>
+        <a class="btn ghost" href="index.html" data-i18n="nav.backHome">← 메인으로</a>
+        <label class="lang-select" title="Language">
+          <span data-i18n="label.language">언어</span>
+          <select id="langSelect">
+            <option value="ko">한국어</option>
+            <option value="en">English</option>
+          </select>
+        </label>
         <button class="btn ghost" id="themeToggle" type="button" data-theme-toggle>🌙 다크모드</button>
       </div>
     </header>
@@ -29,32 +36,32 @@
       <div class="card">
         <div class="hd">
           <div>
-            <h2>이용약관</h2>
-            <p>서비스 이용 시 지켜야 할 기본 기준을 안내합니다.</p>
+            <h2 data-i18n="terms.title">이용약관</h2>
+            <p data-i18n="terms.desc">서비스 이용 시 지켜야 할 기본 기준을 안내합니다.</p>
           </div>
         </div>
         <div class="bd">
           <div class="panel">
-            <div style="font-weight:800; margin-bottom:6px;">서비스 제공</div>
+            <div style="font-weight:800; margin-bottom:6px;" data-i18n="terms.service.title">서비스 제공</div>
             <ul class="info-list">
-              <li>본 사이트는 무료로 미니게임을 제공합니다.</li>
-              <li>서비스 품질 개선을 위해 예고 없이 업데이트될 수 있습니다.</li>
+              <li data-i18n="terms.service.li1">본 사이트는 무료로 미니게임을 제공합니다.</li>
+              <li data-i18n="terms.service.li2">서비스 품질 개선을 위해 예고 없이 업데이트될 수 있습니다.</li>
             </ul>
 
             <div class="hr"></div>
 
-            <div style="font-weight:800; margin-bottom:6px;">이용 제한</div>
+            <div style="font-weight:800; margin-bottom:6px;" data-i18n="terms.limit.title">이용 제한</div>
             <ul class="info-list">
-              <li>사이트 기능을 악의적으로 방해하는 행위를 금지합니다.</li>
-              <li>저작권 보호를 위해 콘텐츠의 무단 복제/배포를 금지합니다.</li>
+              <li data-i18n="terms.limit.li1">사이트 기능을 악의적으로 방해하는 행위를 금지합니다.</li>
+              <li data-i18n="terms.limit.li2">저작권 보호를 위해 콘텐츠의 무단 복제/배포를 금지합니다.</li>
             </ul>
 
             <div class="hr"></div>
 
-            <div style="font-weight:800; margin-bottom:6px;">면책</div>
+            <div style="font-weight:800; margin-bottom:6px;" data-i18n="terms.disclaimer.title">면책</div>
             <ul class="info-list">
-              <li>게임 결과는 오락용이며, 특정 결과를 보장하지 않습니다.</li>
-              <li>외부 링크 또는 광고를 통한 손해에 대해 책임지지 않습니다.</li>
+              <li data-i18n="terms.disclaimer.li1">게임 결과는 오락용이며, 특정 결과를 보장하지 않습니다.</li>
+              <li data-i18n="terms.disclaimer.li2">외부 링크 또는 광고를 통한 손해에 대해 책임지지 않습니다.</li>
             </ul>
           </div>
         </div>
@@ -63,19 +70,19 @@
 
     <footer class="site-footer">
       <div class="footer-links">
-        <a href="index.html">홈</a>
-        <a href="about.html">사이트 소개</a>
-        <a href="contact.html">문의</a>
-        <a href="privacy.html">개인정보처리방침</a>
-        <a href="terms.html">이용약관</a>
+        <a href="index.html" data-i18n="nav.home">홈</a>
+        <a href="about.html" data-i18n="nav.about">사이트 소개</a>
+        <a href="contact.html" data-i18n="nav.contact">문의</a>
+        <a href="privacy.html" data-i18n="nav.privacy">개인정보처리방침</a>
+        <a href="terms.html" data-i18n="nav.terms">이용약관</a>
       </div>
-      <div class="footer-meta">© Mini Game Heaven</div>
+      <div class="footer-meta" data-i18n="footer.copyright">© Mini Game Heaven</div>
     </footer>
   </div>
 
   <script src="shared.js"></script>
   <script>
-    initHeader("이용약관");
+    initHeader("route.terms");
   </script>
 </body>
 </html>
