@@ -7,6 +7,23 @@ const rpsMap = {
   paper:    { label: t('rps.choice.paper'), emoji: '🖐️' }
 };
 
+const CHOICE_KEY_BY_LABEL = {
+  "가위": "scissors",
+  "바위": "rock",
+  "보": "paper",
+  "Scissors": "scissors",
+  "Rock": "rock",
+  "Paper": "paper"
+};
+const OUTCOME_KEY_BY_LABEL = {
+  "승": "win",
+  "무": "draw",
+  "패": "lose",
+  "W": "win",
+  "D": "draw",
+  "L": "lose"
+};
+
 function syncRpsLabels(){
   rpsMap.scissors.label = t('rps.choice.scissors');
   rpsMap.rock.label = t('rps.choice.rock');
@@ -33,22 +50,65 @@ const rpsButtons = [...document.querySelectorAll('[data-rps]')];
 
 let rpsBusy = false;
 
+function parseHistoryLine(line){
+  const match = line.match(/^\[(.+?)\]\s*([^:]+):\s*(.+?)\s*\/\s*([^:]+):\s*(.+?)\s*→\s*(.+)$/);
+  if (!match) return null;
+  const time = match[1].trim();
+  const meLabel = match[3].trim();
+  const cpuLabel = match[5].trim();
+  const outcomeLabel = match[6].trim();
+  const me = CHOICE_KEY_BY_LABEL[meLabel];
+  const cpu = CHOICE_KEY_BY_LABEL[cpuLabel];
+  const outcome = OUTCOME_KEY_BY_LABEL[outcomeLabel];
+  if (!me || !cpu || !outcome) return null;
+  return { time, me, cpu, outcome };
+}
+
 function loadRps(){
   try{
     const raw = localStorage.getItem(RPS_KEY);
     if(!raw) return { w:0, d:0, l:0, hist:[] };
     const data = JSON.parse(raw);
+    let migrated = false;
+    const hist = Array.isArray(data.hist) ? data.hist.slice(0, 50).map(item => {
+      if (typeof item === "string") {
+        const parsed = parseHistoryLine(item);
+        if (parsed) {
+          migrated = true;
+          return parsed;
+        }
+        return item;
+      }
+      return item;
+    }) : [];
+    if (migrated) {
+      localStorage.setItem(RPS_KEY, JSON.stringify({
+        w: Number(data.w||0),
+        d: Number(data.d||0),
+        l: Number(data.l||0),
+        hist
+      }));
+    }
     return {
       w: Number(data.w||0),
       d: Number(data.d||0),
       l: Number(data.l||0),
-      hist: Array.isArray(data.hist) ? data.hist.slice(0, 50) : []
+      hist
     };
   }catch(_){
     return { w:0, d:0, l:0, hist:[] };
   }
 }
 function saveRps(state){ localStorage.setItem(RPS_KEY, JSON.stringify(state)); }
+
+function formatHistory(item){
+  if (typeof item === "string") return item;
+  if (!item || typeof item !== "object") return "";
+  const meLabel = rpsMap[item.me]?.label || item.me;
+  const cpuLabel = rpsMap[item.cpu]?.label || item.cpu;
+  const outcomeLabel = item.outcome === "win" ? t('rps.log.win') : item.outcome === "draw" ? t('rps.log.draw') : t('rps.log.lose');
+  return `[${item.time}] ${t('rps.log.me')}: ${meLabel} / ${t('rps.log.cpu')}: ${cpuLabel} → ${outcomeLabel}`;
+}
 
 function renderRps(){
   const st = loadRps();
@@ -64,7 +124,7 @@ function renderRps(){
   }
   st.hist.forEach(line => {
     const li = document.createElement('li');
-    li.textContent = line;
+    li.textContent = formatHistory(line);
     histList.appendChild(li);
   });
 }
@@ -134,7 +194,7 @@ async function playRps(me){
   const ts = new Date();
   const locale = document.documentElement.getAttribute("data-lang") === "en" ? "en-US" : "ko-KR";
   const timeLabel = ts.toLocaleTimeString(locale, { hour:'2-digit', minute:'2-digit' });
-  const line = `[${timeLabel}] ${t('rps.log.me')}: ${rpsMap[me].label} / ${t('rps.log.cpu')}: ${rpsMap[cpu].label} → ${outcome === 'win' ? t('rps.log.win') : outcome === 'draw' ? t('rps.log.draw') : t('rps.log.lose')}`;
+  const line = { time: timeLabel, me, cpu, outcome };
   st.hist.unshift(line);
   st.hist = st.hist.slice(0, 50);
   saveRps(st);
