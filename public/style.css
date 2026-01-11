@@ -347,6 +347,64 @@ canvas{
 }
 .menu-result-image.is-hidden{display:none}
 
+/* Minesweeper */
+.ms-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:14px;
+}
+.ms-chip{
+  border:1px solid var(--line);
+  background:var(--chip);
+  border-radius:999px;
+  padding:6px 12px;
+  font-size:13px;
+  color:var(--muted);
+}
+.ms-chip b{color:var(--text)}
+.ms-board{
+  --ms-cols: 10;
+  display:grid;
+  grid-template-columns: repeat(var(--ms-cols), minmax(26px, 1fr));
+  gap:6px;
+  max-width:720px;
+}
+.ms-cell{
+  aspect-ratio:1 / 1;
+  border:1px solid var(--line);
+  background:var(--chip);
+  color:var(--text);
+  border-radius:10px;
+  font-weight:800;
+  font-size:14px;
+  cursor:pointer;
+  transition: transform .05s ease, background .15s ease, border-color .15s ease;
+}
+.ms-cell:hover{background:var(--chip2)}
+.ms-cell.revealed{
+  background:var(--panel2);
+  cursor:default;
+  transform:none;
+}
+.ms-cell.flagged{
+  background:rgba(251,191,36,.15);
+  border-color:rgba(251,191,36,.55);
+}
+.ms-cell.mine{
+  background:rgba(251,113,133,.16);
+  border-color:rgba(251,113,133,.6);
+}
+.ms-cell[data-count="1"]{color:#3b82f6}
+.ms-cell[data-count="2"]{color:#16a34a}
+.ms-cell[data-count="3"]{color:#ef4444}
+.ms-cell[data-count="4"]{color:#a855f7}
+.ms-cell[data-count="5"]{color:#f97316}
+.ms-cell[data-count="6"]{color:#0f766e}
+.ms-cell[data-count="7"]{color:#111827}
+.ms-cell[data-count="8"]{color:#6b7280}
+.ms-board.finished .ms-cell{pointer-events:none}
+
 .site-footer{
   margin-top:18px;
   color:var(--muted);
