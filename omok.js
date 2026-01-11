@@ -12,6 +12,7 @@ const ctx = canvas.getContext('2d');
 const turnDot = document.getElementById('turnDot');
 const turnText = document.getElementById('turnText');
 const omokStatus = document.getElementById('omokStatus');
+const omokAlert = document.getElementById('omokAlert');
 const moveList = document.getElementById('moveList');
 const aiLevelEl = document.getElementById('aiLevel');
 
@@ -33,6 +34,7 @@ let gameOver = false;
 let winner = EMPTY;
 let lastMove = null;
 let aiBusy = false;
+let alertTimer = null;
 
 let omokDrawQueued = false;
 function scheduleOmokDraw(force=false){
@@ -89,6 +91,16 @@ function renderMoves(){
     li.textContent = `${idx+1}. ${p} — ${col}${row}`;
     moveList.appendChild(li);
   });
+}
+
+function showOmokAlert(message){
+  if (!omokAlert) return;
+  if (alertTimer) clearTimeout(alertTimer);
+  omokAlert.textContent = message;
+  omokAlert.classList.add('show');
+  alertTimer = setTimeout(() => {
+    omokAlert.classList.remove('show');
+  }, 1400);
 }
 
 window.addEventListener("langchange", () => {
@@ -508,6 +520,7 @@ async function userPlace(x,y){
     const reasonKey = reasonMap[rj.reason] || rj.reason;
     const reasonText = reasonKey.startsWith("omok.reason.") ? t(reasonKey) : reasonKey;
     omokStatus.textContent = t("omok.status.forbidden", { reason: reasonText });
+    showOmokAlert(t("omok.status.forbidden", { reason: reasonText }));
     setTimeout(() => { if(!gameOver) omokStatus.textContent = ""; }, 900);
     return;
   }
