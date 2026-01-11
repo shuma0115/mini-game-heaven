@@ -353,7 +353,11 @@ canvas{
   border-radius: 16px;
   padding: 14px;
 }
-.lotto-sets{ display:grid; gap:12px; }
+.lotto-sets{
+  display:grid;
+  gap:12px;
+  margin-top:10px;
+}
 .lotto-set{
   background: var(--l-card3);
   border: 1px solid var(--l-border);
