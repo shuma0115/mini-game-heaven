@@ -83,7 +83,7 @@
       </div>
       <div class="bd" style="text-align:center;">
         <div class="menu-result">
-          <img id="menuImage" class="menu-result-image is-hidden" src="" alt="" loading="lazy" decoding="async">
+          <img id="menuImage" class="menu-result-image is-hidden" src="" alt="" loading="eager" decoding="async">
           <div id="menuResult" class="menu-result-name" data-i18n="menu.result.prompt">
             버튼을 눌러주세요
           </div>
@@ -165,6 +165,21 @@
   const resultEl = document.getElementById("menuResult");
   const imageEl = document.getElementById("menuImage");
   const btn = document.getElementById("pickMenu");
+
+  const menuImageCache = new Map();
+
+  function preloadMenuImages(){
+    menuItems.forEach(item => {
+      if(menuImageCache.has(item.image)) return;
+      const img = new Image();
+      img.src = item.image;
+      menuImageCache.set(item.image, img);
+    });
+  }
+
+  function schedulePreload(){
+    setTimeout(preloadMenuImages, 0);
+  }
 
   // shared.js에서 제공하는 전역 함수/변수 사용:
   // - getAudioCtx(), ensureAudio(), vol()
@@ -315,6 +330,7 @@
   }
 
   btn.addEventListener("click", runShuffle);
+  schedulePreload();
 
   window.addEventListener("langchange", () => {
     if(currentMenuIndex === null) return;
