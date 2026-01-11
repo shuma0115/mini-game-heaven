@@ -31,10 +31,18 @@ function buildCell(r, c) {
   btn.className = "ms-cell";
   btn.dataset.r = String(r);
   btn.dataset.c = String(c);
-  btn.addEventListener("click", () => onReveal(r, c));
+  btn.addEventListener("pointerdown", (e) => {
+    if (e.button !== 2) return;
+    e.preventDefault();
+    primeAudio();
+    toggleFlag(r, c);
+  });
+  btn.addEventListener("click", () => {
+    primeAudio();
+    onReveal(r, c);
+  });
   btn.addEventListener("contextmenu", (e) => {
     e.preventDefault();
-    toggleFlag(r, c);
   });
   return btn;
 }
@@ -196,7 +204,15 @@ function checkWin() {
     stopTimer();
     statusEl.textContent = t("minesweeper.status.win");
     boardEl.classList.add("finished");
+    try{ sfxWinFanfare(); }catch{}
   }
+}
+
+function primeAudio() {
+  if (typeof getAudioCtx !== "function") return;
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  if (ctx.state === "suspended") ctx.resume().catch(() => {});
 }
 
 function onReveal(r, c) {
@@ -213,6 +229,8 @@ function onReveal(r, c) {
   }
 
   if (cell.mine) {
+    try{ sfxLoseSad(); }catch{}
+    try{ sfxMsExplode(); }catch{}
     revealCell(r, c);
     gameOver = true;
     stopTimer();
@@ -222,6 +240,7 @@ function onReveal(r, c) {
     return;
   }
 
+  try{ sfxMsReveal(); }catch{}
   if (cell.count === 0) {
     revealWave(r, c);
   } else {
@@ -241,6 +260,7 @@ function toggleFlag(r, c) {
   if (!el) return;
   el.classList.toggle("flagged", cell.flagged);
   el.textContent = cell.flagged ? "🚩" : "";
+  try{ sfxMsFlag(); }catch{}
 }
 
 resetBtn.addEventListener("click", resetGame);

@@ -925,7 +925,7 @@ let SFX_VOL = Number(localStorage.getItem(SFX_VOL_KEY) ?? "70"); // 0~100
 function vol(x){
   if(!SFX_ENABLED) return 0;
   const v = Math.max(0, Math.min(1, SFX_VOL/100));
-  return x * v;
+  return x * v * 1.35;
 }
 
 function t(key, vars){
@@ -1045,7 +1045,7 @@ function sfxRpsStart(){
   const t = ctx.currentTime;
 
   const master = ctx.createGain();
-  master.gain.setValueAtTime(vol(0.20), t);
+  master.gain.setValueAtTime(vol(0.30), t);
   master.connect(ctx.destination);
 
   const noiseBuf = ctx.createBuffer(1, Math.floor(ctx.sampleRate*0.18), ctx.sampleRate);
@@ -1056,7 +1056,7 @@ function sfxRpsStart(){
   const hp = ctx.createBiquadFilter(); hp.type="highpass"; hp.frequency.setValueAtTime(600, t);
   const g = ctx.createGain();
   g.gain.setValueAtTime(0.0001, t);
-  g.gain.exponentialRampToValueAtTime(vol(0.18), t+0.02);
+  g.gain.exponentialRampToValueAtTime(vol(0.26), t+0.02);
   g.gain.exponentialRampToValueAtTime(0.0001, t+0.18);
 
   noise.connect(hp); hp.connect(g); g.connect(master);
@@ -1069,7 +1069,7 @@ function sfxRpsTick(){
   const t = ctx.currentTime;
 
   const master = ctx.createGain();
-  master.gain.setValueAtTime(vol(0.09), t);
+  master.gain.setValueAtTime(vol(0.14), t);
   master.connect(ctx.destination);
 
   const o = ctx.createOscillator();
@@ -1078,7 +1078,7 @@ function sfxRpsTick(){
   o.frequency.setValueAtTime(520 + Math.random()*120, t);
 
   g.gain.setValueAtTime(0.0001, t);
-  g.gain.exponentialRampToValueAtTime(vol(0.14), t+0.002);
+  g.gain.exponentialRampToValueAtTime(vol(0.20), t+0.002);
   g.gain.exponentialRampToValueAtTime(0.0001, t+0.04);
 
   o.connect(g); g.connect(master);
@@ -1092,7 +1092,7 @@ function sfxWinFanfare(){
   const t = ctx.currentTime;
 
   const master = ctx.createGain();
-  master.gain.setValueAtTime(vol(0.20), t);
+  master.gain.setValueAtTime(vol(0.30), t);
   master.connect(ctx.destination);
 
   function tone(freq, start, dur, type="sine", amp=0.14){
@@ -1128,7 +1128,7 @@ function sfxLoseSad(){
   const t = ctx.currentTime;
 
   const master = ctx.createGain();
-  master.gain.setValueAtTime(vol(0.22), t);
+  master.gain.setValueAtTime(vol(0.30), t);
   master.connect(ctx.destination);
 
   const o = ctx.createOscillator();
@@ -1157,7 +1157,7 @@ function sfxStonePlace(){
   const t = ctx.currentTime;
 
   const master = ctx.createGain();
-  master.gain.setValueAtTime(vol(0.40), t);
+  master.gain.setValueAtTime(vol(0.30), t);
   master.connect(ctx.destination);
 
   const o1 = ctx.createOscillator();
@@ -1184,7 +1184,102 @@ function sfxStonePlace(){
   master.gain.linearRampToValueAtTime(0.0001, t+0.22);
 }
 
-function startRollingSound(durationSec = 5.0, volumeBase = 0.32) {
+function sfxMsReveal(){
+  const ctx = getAudioCtx(); if(!ctx) return;
+  if (ctx.state === "suspended") ctx.resume().catch(()=>{});
+  const t = ctx.currentTime;
+
+  const master = ctx.createGain();
+  master.gain.setValueAtTime(vol(0.30), t);
+  master.connect(ctx.destination);
+
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.type = "square";
+  o.frequency.setValueAtTime(620 + Math.random()*140, t);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(vol(0.24), t+0.002);
+  g.gain.exponentialRampToValueAtTime(0.0001, t+0.05);
+  o.connect(g); g.connect(master);
+  o.start(t); o.stop(t+0.06);
+
+  const noiseBuf = ctx.createBuffer(1, Math.floor(ctx.sampleRate*0.05), ctx.sampleRate);
+  const d = noiseBuf.getChannelData(0);
+  for(let i=0;i<d.length;i++) d[i] = (Math.random()*2-1) * (1 - i/d.length);
+  const noise = ctx.createBufferSource(); noise.buffer = noiseBuf;
+  const hp = ctx.createBiquadFilter(); hp.type="highpass"; hp.frequency.setValueAtTime(900, t);
+  const ng = ctx.createGain();
+  ng.gain.setValueAtTime(0.0001, t);
+  ng.gain.exponentialRampToValueAtTime(vol(0.16), t+0.002);
+  ng.gain.exponentialRampToValueAtTime(0.0001, t+0.05);
+  noise.connect(hp); hp.connect(ng); ng.connect(master);
+  noise.start(t); noise.stop(t+0.06);
+
+  master.gain.linearRampToValueAtTime(0.0001, t+0.10);
+}
+
+function sfxMsFlag(){
+  const ctx = getAudioCtx(); if(!ctx) return;
+  if (ctx.state === "suspended") ctx.resume().catch(()=>{});
+  const t = ctx.currentTime;
+
+  const master = ctx.createGain();
+  master.gain.setValueAtTime(vol(0.30), t);
+  master.connect(ctx.destination);
+
+  function tick(start, freq){
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = "square";
+    o.frequency.setValueAtTime(freq, start);
+    g.gain.setValueAtTime(0.0001, start);
+    g.gain.exponentialRampToValueAtTime(vol(0.18), start+0.002);
+    g.gain.exponentialRampToValueAtTime(0.0001, start+0.03);
+    o.connect(g); g.connect(master);
+    o.start(start); o.stop(start+0.04);
+  }
+  tick(t, 860 + Math.random()*80);
+  tick(t+0.05, 1080 + Math.random()*120);
+
+  master.gain.linearRampToValueAtTime(0.0001, t+0.12);
+}
+
+function sfxMsExplode(){
+  const ctx = getAudioCtx(); if(!ctx) return;
+  if (ctx.state === "suspended") ctx.resume().catch(()=>{});
+  const t = ctx.currentTime;
+
+  const master = ctx.createGain();
+  master.gain.setValueAtTime(vol(0.30), t);
+  master.connect(ctx.destination);
+
+  const boom = ctx.createOscillator();
+  const boomGain = ctx.createGain();
+  boom.type = "sine";
+  boom.frequency.setValueAtTime(140, t);
+  boom.frequency.exponentialRampToValueAtTime(45, t+0.28);
+  boomGain.gain.setValueAtTime(0.0001, t);
+  boomGain.gain.exponentialRampToValueAtTime(vol(0.28), t+0.01);
+  boomGain.gain.exponentialRampToValueAtTime(0.0001, t+0.32);
+  boom.connect(boomGain); boomGain.connect(master);
+  boom.start(t); boom.stop(t+0.34);
+
+  const noiseBuf = ctx.createBuffer(1, Math.floor(ctx.sampleRate*0.28), ctx.sampleRate);
+  const d = noiseBuf.getChannelData(0);
+  for(let i=0;i<d.length;i++) d[i] = (Math.random()*2-1) * (1 - i/d.length);
+  const noise = ctx.createBufferSource(); noise.buffer = noiseBuf;
+  const lp = ctx.createBiquadFilter(); lp.type="lowpass"; lp.frequency.setValueAtTime(2000, t);
+  const ng = ctx.createGain();
+  ng.gain.setValueAtTime(0.0001, t);
+  ng.gain.exponentialRampToValueAtTime(vol(0.24), t+0.01);
+  ng.gain.exponentialRampToValueAtTime(0.0001, t+0.28);
+  noise.connect(lp); lp.connect(ng); ng.connect(master);
+  noise.start(t); noise.stop(t+0.30);
+
+  master.gain.linearRampToValueAtTime(0.0001, t+0.45);
+}
+
+function startRollingSound(durationSec = 5.0, volumeBase = 0.30) {
   const ctx = getAudioCtx();
   if (!ctx) return null;
   if (ctx.state === "suspended") ctx.resume().catch(() => {});
