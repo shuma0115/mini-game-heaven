@@ -4,4 +4,4 @@ Allow: /
 User-agent: Yeti
 Allow: /
 
-Sitemap: https://shuma0115.github.io/mini-game-heaven/sitemap.xml
+Sitemap: https://minigame-heaven.pages.dev/sitemap.xml
