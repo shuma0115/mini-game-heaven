@@ -29,13 +29,13 @@
   })();
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="canonical" href="https://minigame-heaven.pages.dev/menu.html">
+  <link rel="canonical" href="https://minigame-heaven.pages.dev/menu">
   <meta name="robots" content="index,follow">
     <meta property="og:type" content="website">
   <meta property="og:site_name" data-i18n="site.name" content="미니게임 천국">
   <meta property="og:title" data-i18n="title.menu" content="미니게임 천국 | 오늘 뭐 먹지">
   <meta property="og:description" data-i18n="meta.menu" content="점심·저녁 메뉴를 랜덤으로 추천하는 오늘 뭐 먹지 미니게임입니다.">
-  <meta property="og:url" content="https://minigame-heaven.pages.dev/menu.html">
+  <meta property="og:url" content="https://minigame-heaven.pages.dev/menu">
   <meta name="description" data-i18n="meta.menu" content="점심·저녁 메뉴를 랜덤으로 추천하는 오늘 뭐 먹지 미니게임입니다.">
   <title data-i18n="title.menu">미니게임 천국 | 오늘 뭐 먹지</title>
   <link rel="stylesheet" href="style.css">
@@ -82,8 +82,11 @@
         </div>
       </div>
       <div class="bd" style="text-align:center;">
-        <div id="menuResult" style="font-size:26px; font-weight:900; margin:30px 0;" data-i18n="menu.result.prompt">
-          버튼을 눌러주세요
+        <div class="menu-result">
+          <img id="menuImage" class="menu-result-image is-hidden" src="" alt="" loading="lazy" decoding="async">
+          <div id="menuResult" class="menu-result-name" data-i18n="menu.result.prompt">
+            버튼을 눌러주세요
+          </div>
         </div>
         <button class="btn primary" id="pickMenu" data-i18n="menu.button.pick">🍽️ 메뉴 추천</button>
       </div>
@@ -132,27 +135,35 @@
 <script>
   initHeader("route.menu");
 
-  // 메뉴 목록(필요하면 자유롭게 추가/수정)
-  const menusByLang = {
-    ko: [
-      "김치찌개","된장찌개","순두부찌개","불고기","제육볶음","비빔밥","삼겹살",
-      "돈까스","치킨","피자","햄버거","라면","짬뽕","짜장면","마라탕",
-      "초밥","회","파스타","샐러드","떡볶이","국밥","설렁탕","칼국수","쌀국수"
-    ],
-    en: [
-      "Kimchi stew","Soybean paste stew","Soft tofu stew","Bulgogi","Spicy pork","Bibimbap","Samgyeopsal",
-      "Tonkatsu","Fried chicken","Pizza","Burger","Ramen","Jjamppong","Jjajangmyeon","Malatang",
-      "Sushi","Sashimi","Pasta","Salad","Tteokbokki","Gukbap","Seolleongtang","Kalguksu","Pho"
-    ],
-    ja: [
-      "キムチチゲ","テンジャンチゲ","スンドゥブチゲ","プルコギ","ジェユク炒め","ビビンバ","サムギョプサル",
-      "トンカツ","フライドチキン","ピザ","ハンバーガー","ラーメン","チャンポン","ジャージャー麺","マーラータン",
-      "寿司","刺身","パスタ","サラダ","トッポッキ","クッパ","ソルロンタン","カルグクス","フォー"
-    ]
-  };
+  const menuItems = [
+    { labels: { ko: "김치찌개", en: "Kimchi stew", ja: "キムチチゲ" }, image: "image/Kimchi_stew.png" },
+    { labels: { ko: "된장찌개", en: "Soybean paste stew", ja: "テンジャンチゲ" }, image: "image/Doenjang_stew.png" },
+    { labels: { ko: "순두부찌개", en: "Soft tofu stew", ja: "スンドゥブチゲ" }, image: "image/Sundubu_stew.png" },
+    { labels: { ko: "불고기", en: "Bulgogi", ja: "プルコギ" }, image: "image/Bulgogi.png" },
+    { labels: { ko: "제육볶음", en: "Spicy pork", ja: "ジェユク炒め" }, image: "image/Stir_fried_pork.png" },
+    { labels: { ko: "비빔밥", en: "Bibimbap", ja: "ビビンバ" }, image: "image/Bibimbap.png" },
+    { labels: { ko: "삼겹살", en: "Samgyeopsal", ja: "サムギョプサル" }, image: "image/Samgyeopsal.png" },
+    { labels: { ko: "돈까스", en: "Tonkatsu", ja: "トンカツ" }, image: "image/Pork_cutlet.png" },
+    { labels: { ko: "치킨", en: "Fried chicken", ja: "フライドチキン" }, image: "image/Chicken.png" },
+    { labels: { ko: "피자", en: "Pizza", ja: "ピザ" }, image: "image/Pizza.png" },
+    { labels: { ko: "햄버거", en: "Burger", ja: "ハンバーガー" }, image: "image/Hamburger.png" },
+    { labels: { ko: "라면", en: "Ramen", ja: "ラーメン" }, image: "image/Ramen.png" },
+    { labels: { ko: "짬뽕", en: "Jjamppong", ja: "チャンポン" }, image: "image/Jjamppong.png" },
+    { labels: { ko: "짜장면", en: "Jjajangmyeon", ja: "ジャージャー麺" }, image: "image/Jjajangmyeon.png" },
+    { labels: { ko: "마라탕", en: "Malatang", ja: "マーラータン" }, image: "image/Mala_tang.png" },
+    { labels: { ko: "초밥", en: "Sushi", ja: "寿司" }, image: "image/Sushi.png" },
+    { labels: { ko: "파스타", en: "Pasta", ja: "パスタ" }, image: "image/Pasta.png" },
+    { labels: { ko: "샐러드", en: "Salad", ja: "サラダ" }, image: "image/Salad.png" },
+    { labels: { ko: "떡볶이", en: "Tteokbokki", ja: "トッポッキ" }, image: "image/Tteokbokki.png" },
+    { labels: { ko: "국밥", en: "Gukbap", ja: "クッパ" }, image: "image/Gukbap.png" },
+    { labels: { ko: "설렁탕", en: "Seolleongtang", ja: "ソルロンタン" }, image: "image/Seolleongtang.png" },
+    { labels: { ko: "칼국수", en: "Kalguksu", ja: "カルグクス" }, image: "image/Kalguksu.png" },
+    { labels: { ko: "쌀국수", en: "Pho", ja: "フォー" }, image: "image/Phosphorus_noodles.png" }
+  ];
   let currentMenuIndex = null;
 
   const resultEl = document.getElementById("menuResult");
+  const imageEl = document.getElementById("menuImage");
   const btn = document.getElementById("pickMenu");
 
   // shared.js에서 제공하는 전역 함수/변수 사용:
@@ -235,14 +246,29 @@
 
   let busy = false;
 
-  function getMenus(){
-    const lang = document.documentElement.getAttribute("data-lang") || "ko";
-    return menusByLang[lang] || menusByLang.ko;
+  function getMenuItems(){
+    return menuItems;
   }
 
-  function pickRandomMenu(){
-    const menus = getMenus();
-    return menus[Math.floor(Math.random() * menus.length)];
+  function getMenuLabel(item){
+    const lang = document.documentElement.getAttribute("data-lang") || "ko";
+    return item.labels[lang] || item.labels.ko;
+  }
+
+  function setMenuResult(item){
+    resultEl.textContent = getMenuLabel(item);
+    if(imageEl){
+      imageEl.src = item.image;
+      imageEl.alt = getMenuLabel(item);
+      imageEl.classList.remove("is-hidden");
+    }
+  }
+
+  function hideMenuImage(){
+    if(!imageEl) return;
+    imageEl.removeAttribute("src");
+    imageEl.alt = "";
+    imageEl.classList.add("is-hidden");
   }
 
   async function runShuffle(){
@@ -253,6 +279,7 @@
     await ensureAudio();
 
     resultEl.textContent = t("menu.result.choosing");
+    hideMenuImage();
     try{ sfxShuffleStart(); }catch{}
 
     const startAt = performance.now();
@@ -270,15 +297,17 @@
 
         if(now - lastTick >= 70){
           lastTick = now;
-          resultEl.textContent = pickRandomMenu();
+          const items = getMenuItems();
+          const item = items[Math.floor(Math.random() * items.length)];
+          resultEl.textContent = getMenuLabel(item);
           try{ sfxShuffleTick(); }catch{}
         }
       }, 16);
     });
 
-    const menus = getMenus();
-    currentMenuIndex = Math.floor(Math.random() * menus.length);
-    resultEl.textContent = menus[currentMenuIndex];
+    const items = getMenuItems();
+    currentMenuIndex = Math.floor(Math.random() * items.length);
+    setMenuResult(items[currentMenuIndex]);
     try{ sfxFinalDing(); }catch{}
 
     btn.disabled = false;
@@ -289,9 +318,9 @@
 
   window.addEventListener("langchange", () => {
     if(currentMenuIndex === null) return;
-    const menus = getMenus();
-    if(currentMenuIndex < menus.length){
-      resultEl.textContent = menus[currentMenuIndex];
+    const items = getMenuItems();
+    if(currentMenuIndex < items.length){
+      setMenuResult(items[currentMenuIndex]);
     }
   });
 </script>

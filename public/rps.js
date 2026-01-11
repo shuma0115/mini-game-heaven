@@ -214,7 +214,8 @@ async function playRps(me){
   if(outcome === 'lose') st.l++;
 
   const ts = new Date();
-  const locale = document.documentElement.getAttribute("data-lang") === "en" ? "en-US" : "ko-KR";
+  const lang = document.documentElement.getAttribute("data-lang");
+  const locale = lang === "en" ? "en-US" : lang === "ja" ? "ja-JP" : "ko-KR";
   const timeLabel = ts.toLocaleTimeString(locale, { hour:'2-digit', minute:'2-digit' });
   const line = { time: timeLabel, me, cpu, outcome };
   st.hist.unshift(line);

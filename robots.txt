@@ -5,4 +5,3 @@ User-agent: Yeti
 Allow: /
 
 Sitemap: https://minigame-heaven.pages.dev/sitemap.xml
-Sitemap: https://minigame-heaven.pages.dev/sitemaps.xml
