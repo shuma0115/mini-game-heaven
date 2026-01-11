@@ -519,7 +519,7 @@ async function userPlace(x,y){
     };
     const reasonKey = reasonMap[rj.reason] || rj.reason;
     const reasonText = reasonKey.startsWith("omok.reason.") ? t(reasonKey) : reasonKey;
-    omokStatus.textContent = t("omok.status.forbidden", { reason: reasonText });
+    omokStatus.textContent = "";
     showOmokAlert(t("omok.status.forbidden", { reason: reasonText }));
     setTimeout(() => { if(!gameOver) omokStatus.textContent = ""; }, 900);
     return;

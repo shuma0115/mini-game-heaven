@@ -276,8 +276,8 @@ html[data-theme="light"] .turn-dot{border-color: rgba(0,0,0,.25);}
 .omok-alert{
   position:absolute;
   left:50%;
-  top:12px;
-  transform:translateX(-50%);
+  top:50%;
+  transform:translate(-50%, -50%);
   background:rgba(17,24,39,.92);
   color:#fff;
   border:1px solid rgba(255,255,255,.18);
