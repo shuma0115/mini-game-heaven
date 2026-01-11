@@ -610,7 +610,7 @@ function applyLanguage(lang){
     if(dict[key]) titleEl.textContent = dict[key];
   }
 
-  const theme = htmlEl.getAttribute("data-theme") || "dark";
+  const theme = htmlEl.getAttribute("data-theme") || "light";
   const label = theme === "dark" ? t("button.lightMode") : t("button.darkMode");
   document.querySelectorAll("[data-theme-toggle]").forEach(btn => btn.textContent = label);
 
@@ -624,7 +624,7 @@ function applyTheme(theme){
   document.querySelectorAll("[data-theme-toggle]").forEach(btn => btn.textContent = label);
 }
 function toggleTheme(){
-  const current = htmlEl.getAttribute("data-theme") || "dark";
+  const current = htmlEl.getAttribute("data-theme") || "light";
   applyTheme(current === "dark" ? "light" : "dark");
 }
 
@@ -640,7 +640,7 @@ function initHeader(routeKey){
     themeBtn.setAttribute("data-theme-toggle","1");
     themeBtn.addEventListener("click", toggleTheme);
   }
-  const savedTheme = localStorage.getItem(THEME_KEY) || "dark";
+  const savedTheme = localStorage.getItem(THEME_KEY) || "light";
   applyTheme(savedTheme);
 
   const langSelect = document.getElementById("langSelect");
