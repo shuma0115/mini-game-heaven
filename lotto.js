@@ -56,7 +56,14 @@ function revealBall(setIdx, numIdx, value) {
   setTimeout(() => el.classList.remove("reveal"), 260);
 }
 function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
-function setToast(msg) { lottoToastEl.textContent = msg || ""; }
+function setToast(msg, key = "") {
+  lottoToastEl.textContent = msg || "";
+  if (key) {
+    lottoToastEl.dataset.i18nKey = key;
+  } else {
+    delete lottoToastEl.dataset.i18nKey;
+  }
+}
 
 function formatTime(ts) {
   const lang = document.documentElement.getAttribute("data-lang") || "ko";
@@ -76,7 +83,7 @@ async function runDrawSequence() {
   lottoBtnPick.disabled = true;
   lottoBtnReset.disabled = true;
   lottoBtnCopy.disabled = true;
-  setToast(t("lotto.toast.drawing"));
+  setToast(t("lotto.toast.drawing"), "lotto.toast.drawing");
 
   const result = generateFiveSets();
   renderPlaceholders();
@@ -111,7 +118,7 @@ async function runDrawSequence() {
   lottoLastCreatedAt = now;
   const tsLabel = formatTime(now);
   lottoMetaEl.textContent = t("lotto.meta.time", { time: tsLabel });
-  setToast(t("lotto.toast.done"));
+  setToast(t("lotto.toast.done"), "lotto.toast.done");
 
   addHistory({ id: cryptoRandomId(), createdAt: tsLabel, createdAtTs: now, sets: lottoLastResult });
 
@@ -126,7 +133,7 @@ lottoBtnPick.addEventListener("click", () => {
     lottoIsDrawing = false;
     lottoBtnPick.disabled = false;
     lottoBtnReset.disabled = false;
-    setToast(t("lotto.toast.error"));
+    setToast(t("lotto.toast.error"), "lotto.toast.error");
   });
 });
 
@@ -135,9 +142,9 @@ lottoBtnCopy.addEventListener("click", async () => {
   const text = formatFiveSetsForCopy(lottoLastResult);
   try {
     await navigator.clipboard.writeText(text);
-    setToast(t("lotto.toast.copyCurrent"));
+    setToast(t("lotto.toast.copyCurrent"), "lotto.toast.copyCurrent");
   } catch {
-    setToast(t("lotto.toast.copyFail"));
+    setToast(t("lotto.toast.copyFail"), "lotto.toast.copyFail");
   }
 });
 
@@ -166,9 +173,9 @@ lottoBtnCopyHistory.addEventListener("click", async () => {
 
   try {
     await navigator.clipboard.writeText(text);
-    setToast(t("lotto.toast.copied"));
+    setToast(t("lotto.toast.copied"), "lotto.toast.copied");
   } catch {
-    setToast(t("lotto.toast.copyFail"));
+    setToast(t("lotto.toast.copyFail"), "lotto.toast.copyFail");
   }
 });
 
@@ -177,7 +184,7 @@ lottoBtnClearHistory.addEventListener("click", () => {
   if (!ok) return;
   localStorage.removeItem(STORAGE_KEY);
   renderHistory();
-  setToast(t("lotto.toast.cleared"));
+  setToast(t("lotto.toast.cleared"), "lotto.toast.cleared");
 });
 
 function loadHistory() {
@@ -266,7 +273,7 @@ function renderHistory() {
 
       if (action === "delete") {
         deleteHistory(id);
-        setToast(t("lotto.toast.deletedOne"));
+        setToast(t("lotto.toast.deletedOne"), "lotto.toast.deletedOne");
         return;
       }
 
@@ -275,9 +282,9 @@ function renderHistory() {
         const text = `(${label})\n` + formatFiveSetsForCopy(item.sets);
         try {
           await navigator.clipboard.writeText(text);
-          setToast(t("lotto.toast.copiedOne"));
+          setToast(t("lotto.toast.copiedOne"), "lotto.toast.copiedOne");
         } catch {
-          setToast(t("lotto.toast.copyFail"));
+          setToast(t("lotto.toast.copyFail"), "lotto.toast.copyFail");
         }
       }
     });
@@ -287,6 +294,10 @@ function renderHistory() {
 renderPlaceholders();
 
 window.addEventListener("langchange", () => {
+  const toastKey = lottoToastEl.dataset.i18nKey;
+  if (toastKey) {
+    lottoToastEl.textContent = t(toastKey);
+  }
   for (let s = 0; s < 5; s++) {
     const badge = document.getElementById(`lotto-badge-${s}`);
     if (!badge) continue;
