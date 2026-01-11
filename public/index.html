@@ -9,12 +9,17 @@
     try{
       var lang = localStorage.getItem("lang");
       if(lang){
-        document.documentElement.setAttribute("data-lang", lang);
-        document.documentElement.setAttribute("lang", lang);
+        var root = document.documentElement;
+        root.setAttribute("data-lang", lang);
+        root.setAttribute("lang", lang);
+        if(lang !== "ko"){
+          root.classList.add("lang-loading");
+        }
       }
     }catch(e){}
   })();
 </script>
+<style>html.lang-loading body{visibility:hidden}</style>
   <meta charset="utf-8" />
 <meta name="google-site-verification" content="O6RGGIJJ0AAZg7LRBwtfth8OiwKDQdc-UzdxoSf6BJM" />
 <meta name="naver-site-verification" content="13bcf9ed471df9d66f8b4e35c2d4fa02663ba20a" />
@@ -87,7 +92,7 @@
             <a class="btn primary" href="omok.html" data-i18n="index.button.omok">⚫ 오목</a>
             <a class="btn primary" href="lotto.html" data-i18n="index.button.lotto">🎲 로또 추첨기</a>
             <a class="btn primary" href="menu.html" data-i18n="index.button.menu">🍽️ 오늘 뭐 먹지</a>
-            <a class="btn primary" href="minesweeper.html">💣 지뢰찾기</a>
+            <a class="btn primary" href="minesweeper.html" data-i18n="index.button.minesweeper">💣 지뢰찾기</a>
           </div>
           <div class="hr"></div>
         </div>
@@ -119,6 +124,11 @@
 
             <div style="font-weight:800; margin-bottom:6px;" data-i18n="index.game.menu.title">오늘 뭐 먹지</div>
             <div class="small" data-i18n="index.game.menu.desc">버튼을 누르면 점심·저녁 식사 메뉴를 무작위로 추천해주는 간단한 게임입니다.</div>
+
+            <div class="hr"></div>
+
+            <div style="font-weight:800; margin-bottom:6px;" data-i18n="index.game.minesweeper.title">지뢰찾기</div>
+            <div class="small" data-i18n="index.game.minesweeper.desc">지뢰를 피해 숫자 힌트를 해석하며 모든 안전 칸을 여는 퍼즐 게임입니다.</div>
           </div>
         </div>
       </div>

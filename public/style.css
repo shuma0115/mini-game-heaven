@@ -55,6 +55,8 @@ html[data-theme="light"]{
   --l-border: rgba(0,0,0,0.10);
 }
 
+html.lang-loading body{visibility:hidden}
+
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
@@ -190,13 +192,18 @@ header{display:flex; align-items:center; justify-content:space-between; gap:12px
       white-space:nowrap;
     }
     .lang-select select{
-      background:transparent;
+      background:var(--panel);
       border:none;
       color:var(--text);
       font-weight:700;
       font-size:13px;
       cursor:pointer;
     }
+    .lang-select select option{
+      background:var(--panel);
+      color:var(--text);
+    }
+html[data-theme="dark"] .lang-select select{ color-scheme: dark; }
 
 /* RPS */
 .rps-area{display:grid; grid-template-columns: 1fr 1fr; gap:12px;}

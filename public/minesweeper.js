@@ -126,6 +126,7 @@ function resetGame() {
   gameOver = false;
   elapsed = 0;
   stopTimer();
+  boardEl.classList.remove("finished");
 
   minesEl.textContent = String(mines);
   flagsEl.textContent = String(flagsCount);

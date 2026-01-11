@@ -9,12 +9,17 @@
     try{
       var lang = localStorage.getItem("lang");
       if(lang){
-        document.documentElement.setAttribute("data-lang", lang);
-        document.documentElement.setAttribute("lang", lang);
+        var root = document.documentElement;
+        root.setAttribute("data-lang", lang);
+        root.setAttribute("lang", lang);
+        if(lang !== "ko"){
+          root.classList.add("lang-loading");
+        }
       }
     }catch(e){}
   })();
 </script>
+<style>html.lang-loading body{visibility:hidden}</style>
   <meta charset="utf-8" />
 <meta name="google-site-verification" content="O6RGGIJJ0AAZg7LRBwtfth8OiwKDQdc-UzdxoSf6BJM" />
 <meta name="naver-site-verification" content="13bcf9ed471df9d66f8b4e35c2d4fa02663ba20a" />

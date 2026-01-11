@@ -226,7 +226,7 @@ function drawOmok(_force=false){
     ctx.font = `900 ${Math.floor(canvas.width*0.055)}px ui-sans-serif, system-ui`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const msg = winner === userColor ? t("omok.win.user") : t("omok.win.ai");
+    const msg = winner === EMPTY ? t("omok.status.draw") : (winner === userColor ? t("omok.win.user") : t("omok.win.ai"));
     ctx.fillText(msg, canvas.width/2, canvas.height/2);
     ctx.restore();
   }
