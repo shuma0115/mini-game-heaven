@@ -13,7 +13,7 @@ const lottoBtnClearHistory = document.getElementById("lottoBtnClearHistory");
 
 let lottoLastResult = [];
 let lottoIsDrawing = false;
-let lottoLastCreatedAt = "";
+let lottoLastCreatedAt = 0;
 
 function pickOneSet() {
   const s = new Set();
@@ -56,8 +56,10 @@ function revealBall(setIdx, numIdx, value) {
 function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
 function setToast(msg) { lottoToastEl.textContent = msg || ""; }
 
-function formatNow() {
-  return new Date().toLocaleString(); // 환경별 포맷 차이 있을 수 있음(확실한게 아니야)
+function formatTime(ts) {
+  const lang = document.documentElement.getAttribute("data-lang") || "ko";
+  const locale = lang === "en" ? "en-US" : "ko-KR";
+  return new Date(ts).toLocaleString(locale);
 }
 function formatFiveSetsForCopy(fiveSets) {
   return fiveSets.map((set, i) => `SET ${i + 1}: ${set.join(", ")}`).join("\n");
@@ -103,12 +105,13 @@ async function runDrawSequence() {
 
   lottoLastResult = result;
 
-  const ts = formatNow();
-  lottoLastCreatedAt = ts;
-  lottoMetaEl.textContent = t("lotto.meta.time", { time: ts });
+  const now = Date.now();
+  lottoLastCreatedAt = now;
+  const tsLabel = formatTime(now);
+  lottoMetaEl.textContent = t("lotto.meta.time", { time: tsLabel });
   setToast(t("lotto.toast.done"));
 
-  addHistory({ id: cryptoRandomId(), createdAt: ts, sets: lottoLastResult });
+  addHistory({ id: cryptoRandomId(), createdAt: tsLabel, createdAtTs: now, sets: lottoLastResult });
 
   lottoBtnPick.disabled = false;
   lottoBtnReset.disabled = false;
@@ -140,7 +143,7 @@ lottoBtnReset.addEventListener("click", () => {
   if (lottoIsDrawing) return;
   lottoSetsEl.innerHTML = "";
   lottoLastResult = [];
-  lottoLastCreatedAt = "";
+  lottoLastCreatedAt = 0;
   lottoBtnCopy.disabled = true;
   lottoMetaEl.textContent = t("lotto.meta.empty");
   setToast("");
@@ -154,7 +157,8 @@ lottoBtnCopyHistory.addEventListener("click", async () => {
   if (!history.length) return;
 
   const text = history.map((item, idx) => {
-    const header = `#${history.length - idx} (${item.createdAt})`;
+    const label = typeof item.createdAtTs === "number" ? formatTime(item.createdAtTs) : item.createdAt;
+    const header = `#${history.length - idx} (${label})`;
     return header + "\n" + formatFiveSetsForCopy(item.sets);
   }).join("\n\n");
 
@@ -180,7 +184,21 @@ function loadHistory() {
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
-    return parsed;
+    let migrated = false;
+    const normalized = parsed.map(item => {
+      if (!item || typeof item !== "object") return item;
+      if (typeof item.createdAtTs === "number") return item;
+      const ts = Date.parse(item.createdAt);
+      if (Number.isFinite(ts)) {
+        migrated = true;
+        return { ...item, createdAtTs: ts };
+      }
+      return item;
+    });
+    if (migrated) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+    }
+    return normalized;
   } catch {
     return [];
   }
@@ -206,10 +224,11 @@ function renderHistory() {
     card.className = "lotto-history-item";
     const numberLabel = `#${history.length - index}`;
 
+    const createdLabel = typeof item.createdAtTs === "number" ? formatTime(item.createdAtTs) : item.createdAt;
     card.innerHTML = `
       <div class="lotto-history-meta">
         <span>${numberLabel}</span>
-        <span>${escapeHtml(item.createdAt)}</span>
+        <span>${escapeHtml(createdLabel)}</span>
       </div>
 
       <div class="lotto-history-sets">
@@ -250,7 +269,8 @@ function renderHistory() {
       }
 
       if (action === "copy") {
-        const text = `(${item.createdAt})\n` + formatFiveSetsForCopy(item.sets);
+        const label = typeof item.createdAtTs === "number" ? formatTime(item.createdAtTs) : item.createdAt;
+        const text = `(${label})\n` + formatFiveSetsForCopy(item.sets);
         try {
           await navigator.clipboard.writeText(text);
           setToast(t("lotto.toast.copiedOne"));
@@ -273,6 +293,6 @@ window.addEventListener("langchange", () => {
     return;
   }
   if (lottoLastCreatedAt) {
-    lottoMetaEl.textContent = t("lotto.meta.time", { time: lottoLastCreatedAt });
+    lottoMetaEl.textContent = t("lotto.meta.time", { time: formatTime(lottoLastCreatedAt) });
   }
 });
