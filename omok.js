@@ -91,6 +91,13 @@ function renderMoves(){
   });
 }
 
+window.addEventListener("langchange", () => {
+  renderTurn();
+  renderMoves();
+  if (gameOver && winner === EMPTY) {
+    omokStatus.textContent = t("omok.status.draw");
+  }
+});
 function drawOmok(_force=false){
   const rect = omokCanvasWrap.getBoundingClientRect();
   const cw = Math.floor(rect.width);

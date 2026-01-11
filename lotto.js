@@ -13,6 +13,7 @@ const lottoBtnClearHistory = document.getElementById("lottoBtnClearHistory");
 
 let lottoLastResult = [];
 let lottoIsDrawing = false;
+let lottoLastCreatedAt = "";
 
 function pickOneSet() {
   const s = new Set();
@@ -103,6 +104,7 @@ async function runDrawSequence() {
   lottoLastResult = result;
 
   const ts = formatNow();
+  lottoLastCreatedAt = ts;
   lottoMetaEl.textContent = t("lotto.meta.time", { time: ts });
   setToast(t("lotto.toast.done"));
 
@@ -138,6 +140,7 @@ lottoBtnReset.addEventListener("click", () => {
   if (lottoIsDrawing) return;
   lottoSetsEl.innerHTML = "";
   lottoLastResult = [];
+  lottoLastCreatedAt = "";
   lottoBtnCopy.disabled = true;
   lottoMetaEl.textContent = t("lotto.meta.empty");
   setToast("");
@@ -260,3 +263,16 @@ function renderHistory() {
 }
 
 renderPlaceholders();
+
+window.addEventListener("langchange", () => {
+  renderHistory();
+  if (lottoIsDrawing) return;
+  if (!lottoLastResult.length) {
+    lottoMetaEl.textContent = t("lotto.meta.empty");
+    renderPlaceholders();
+    return;
+  }
+  if (lottoLastCreatedAt) {
+    lottoMetaEl.textContent = t("lotto.meta.time", { time: lottoLastCreatedAt });
+  }
+});

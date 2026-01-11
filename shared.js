@@ -28,6 +28,15 @@ const I18N = {
     "title.contact": "미니게임 천국 | 문의",
     "title.privacy": "미니게임 천국 | 개인정보처리방침",
     "title.terms": "미니게임 천국 | 이용약관",
+    "meta.index": "가위바위보, 오목, 로또 추첨기, 오늘 뭐 먹지까지 한 곳에서 즐기는 미니게임 사이트입니다.",
+    "meta.rps": "가위바위보 미니게임과 규칙, 전략 팁, 전적 기록을 제공하는 페이지입니다.",
+    "meta.omok": "오목 미니게임 플레이와 승리 조건, 기본 전술을 안내하는 페이지입니다.",
+    "meta.lotto": "로또 번호 추첨기와 사용 방법, 확률 안내를 제공하는 페이지입니다.",
+    "meta.menu": "점심·저녁 메뉴를 랜덤으로 추천하는 오늘 뭐 먹지 미니게임입니다.",
+    "meta.about": "미니게임 천국의 목적, 콘텐츠 원칙, 업데이트 계획을 소개합니다.",
+    "meta.contact": "미니게임 천국 문의와 피드백 안내 페이지입니다.",
+    "meta.privacy": "미니게임 천국 개인정보처리방침과 광고, 쿠키 사용 안내입니다.",
+    "meta.terms": "미니게임 천국 이용약관과 서비스 이용 기준을 안내합니다.",
 
     "route.main": "메인",
     "route.rps": "가위바위보",
@@ -183,6 +192,7 @@ const I18N = {
     "menu.sub": "점심·저녁 메뉴를 랜덤으로 추천합니다.",
     "menu.button.pick": "🍽️ 메뉴 추천",
     "menu.result.prompt": "버튼을 눌러주세요",
+    "menu.result.choosing": "고르는 중…",
     "menu.guide.title": "추천 가이드",
     "menu.guide.desc": "추천 방식과 활용 팁을 확인하세요.",
     "menu.guide.rules.title": "추천 방식",
@@ -259,6 +269,15 @@ const I18N = {
     "title.contact": "Mini Game Heaven | Contact",
     "title.privacy": "Mini Game Heaven | Privacy Policy",
     "title.terms": "Mini Game Heaven | Terms",
+    "meta.index": "Play rock paper scissors, omok, lotto draw, and menu picker in one place.",
+    "meta.rps": "Rock paper scissors game with rules, tips, and match records.",
+    "meta.omok": "Omok mini game with win conditions and basic tactics.",
+    "meta.lotto": "Lotto number draw with usage guidance and probability notes.",
+    "meta.menu": "Random lunch and dinner menu picker mini game.",
+    "meta.about": "Learn about Mini Game Heaven, its goals, and content principles.",
+    "meta.contact": "Contact and feedback information for Mini Game Heaven.",
+    "meta.privacy": "Privacy policy, ads, and cookie usage for Mini Game Heaven.",
+    "meta.terms": "Terms of service and usage guidelines for Mini Game Heaven.",
 
     "route.main": "Home",
     "route.rps": "Rock Paper Scissors",
@@ -414,6 +433,7 @@ const I18N = {
     "menu.sub": "Get a random lunch or dinner pick.",
     "menu.button.pick": "🍽️ Pick a Menu",
     "menu.result.prompt": "Press the button",
+    "menu.result.choosing": "Choosing…",
     "menu.guide.title": "Suggestion Guide",
     "menu.guide.desc": "How it works and tips.",
     "menu.guide.rules.title": "How it works",
@@ -514,6 +534,7 @@ function applyLanguage(lang){
   CURRENT_LANG = I18N[lang] ? lang : "ko";
   localStorage.setItem(LANG_KEY, CURRENT_LANG);
   htmlEl.setAttribute("data-lang", CURRENT_LANG);
+  htmlEl.setAttribute("lang", CURRENT_LANG);
   const dict = I18N[CURRENT_LANG] || I18N.ko;
 
   document.querySelectorAll("[data-i18n]").forEach(el => {
@@ -531,6 +552,10 @@ function applyLanguage(lang){
   document.querySelectorAll("[data-i18n-aria]").forEach(el => {
     const key = el.dataset.i18nAria;
     if(dict[key]) el.setAttribute("aria-label", dict[key]);
+  });
+  document.querySelectorAll("meta[name=\"description\"][data-i18n]").forEach(el => {
+    const key = el.dataset.i18n;
+    if(dict[key]) el.setAttribute("content", dict[key]);
   });
 
   const titleEl = document.querySelector("title[data-i18n]");

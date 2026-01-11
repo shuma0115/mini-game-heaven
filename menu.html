@@ -6,7 +6,7 @@
      crossorigin="anonymous"></script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="점심·저녁 메뉴를 랜덤으로 추천하는 오늘 뭐 먹지 미니게임입니다.">
+  <meta name="description" data-i18n="meta.menu" content="점심·저녁 메뉴를 랜덤으로 추천하는 오늘 뭐 먹지 미니게임입니다.">
   <title data-i18n="title.menu">미니게임 천국 | 오늘 뭐 먹지</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -101,12 +101,20 @@
 <script>
   initHeader("route.menu");
 
-    // 메뉴 목록(필요하면 자유롭게 추가/수정)
-  const menus = [
-    "김치찌개","된장찌개","순두부찌개","불고기","제육볶음","비빔밥","삼겹살",
-    "돈까스","치킨","피자","햄버거","라면","짬뽕","짜장면","마라탕",
-    "초밥","회","파스타","샐러드","떡볶이","국밥","설렁탕","칼국수","쌀국수"
-  ];
+  // 메뉴 목록(필요하면 자유롭게 추가/수정)
+  const menusByLang = {
+    ko: [
+      "김치찌개","된장찌개","순두부찌개","불고기","제육볶음","비빔밥","삼겹살",
+      "돈까스","치킨","피자","햄버거","라면","짬뽕","짜장면","마라탕",
+      "초밥","회","파스타","샐러드","떡볶이","국밥","설렁탕","칼국수","쌀국수"
+    ],
+    en: [
+      "Kimchi stew","Soybean paste stew","Soft tofu stew","Bulgogi","Spicy pork","Bibimbap","Samgyeopsal",
+      "Tonkatsu","Fried chicken","Pizza","Burger","Ramen","Jjamppong","Jjajangmyeon","Malatang",
+      "Sushi","Sashimi","Pasta","Salad","Tteokbokki","Gukbap","Seolleongtang","Kalguksu","Pho"
+    ]
+  };
+  let currentMenuIndex = null;
 
   const resultEl = document.getElementById("menuResult");
   const btn = document.getElementById("pickMenu");
@@ -191,7 +199,13 @@
 
   let busy = false;
 
+  function getMenus(){
+    const lang = document.documentElement.getAttribute("data-lang") || "ko";
+    return menusByLang[lang] || menusByLang.ko;
+  }
+
   function pickRandomMenu(){
+    const menus = getMenus();
     return menus[Math.floor(Math.random() * menus.length)];
   }
 
@@ -202,7 +216,7 @@
 
     await ensureAudio();
 
-    resultEl.textContent = "고르는 중…";
+    resultEl.textContent = t("menu.result.choosing");
     try{ sfxShuffleStart(); }catch{}
 
     const startAt = performance.now();
@@ -226,8 +240,9 @@
       }, 16);
     });
 
-    const finalPick = pickRandomMenu();
-    resultEl.textContent = finalPick;
+    const menus = getMenus();
+    currentMenuIndex = Math.floor(Math.random() * menus.length);
+    resultEl.textContent = menus[currentMenuIndex];
     try{ sfxFinalDing(); }catch{}
 
     btn.disabled = false;
@@ -235,6 +250,14 @@
   }
 
   btn.addEventListener("click", runShuffle);
+
+  window.addEventListener("langchange", () => {
+    if(currentMenuIndex === null) return;
+    const menus = getMenus();
+    if(currentMenuIndex < menus.length){
+      resultEl.textContent = menus[currentMenuIndex];
+    }
+  });
 </script>
 </body>
 </html>
