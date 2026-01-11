@@ -41,11 +41,38 @@ function renderPlaceholders() {
     lottoSetsEl.appendChild(div);
   }
 }
+function renderResultSets(result) {
+  lottoSetsEl.innerHTML = "";
+  result.forEach((set, setIdx) => {
+    const div = document.createElement("div");
+    div.className = "lotto-set";
+    div.innerHTML = `
+      <div class="lotto-set-title">
+        <span>SET ${setIdx + 1}</span>
+        <span class="lotto-badge" id="lotto-badge-${setIdx}" data-state="done">${t("lotto.badge.done")}</span>
+      </div>
+      <div class="lotto-balls" id="lotto-balls-${setIdx}">
+        ${set.map((value, nIdx) => `
+          <div class="lotto-ball" id="lotto-ball-${setIdx}-${nIdx}">${value}</div>
+        `).join("")}
+      </div>
+    `;
+    lottoSetsEl.appendChild(div);
+  });
+}
 function setBadge(setIdx, state) {
   const el = document.getElementById(`lotto-badge-${setIdx}`);
   if (!el) return;
   el.dataset.state = state;
   el.textContent = t(`lotto.badge.${state}`);
+}
+function refreshBadges() {
+  for (let s = 0; s < 5; s++) {
+    const badge = document.getElementById(`lotto-badge-${s}`);
+    if (!badge) continue;
+    const state = badge.dataset.state || "wait";
+    badge.textContent = t(`lotto.badge.${state}`);
+  }
 }
 function revealBall(setIdx, numIdx, value) {
   const el = document.getElementById(`lotto-ball-${setIdx}-${numIdx}`);
@@ -298,19 +325,17 @@ window.addEventListener("langchange", () => {
   if (toastKey) {
     lottoToastEl.textContent = t(toastKey);
   }
-  for (let s = 0; s < 5; s++) {
-    const badge = document.getElementById(`lotto-badge-${s}`);
-    if (!badge) continue;
-    const state = badge.dataset.state || "wait";
-    badge.textContent = t(`lotto.badge.${state}`);
-  }
   renderHistory();
-  if (lottoIsDrawing) return;
+  if (lottoIsDrawing) {
+    refreshBadges();
+    return;
+  }
   if (!lottoLastResult.length) {
     lottoMetaEl.textContent = t("lotto.meta.empty");
     renderPlaceholders();
     return;
   }
+  renderResultSets(lottoLastResult);
   if (lottoLastCreatedAt) {
     lottoMetaEl.textContent = t("lotto.meta.time", { time: formatTime(lottoLastCreatedAt) });
   }
