@@ -40,7 +40,7 @@
           <input id="sfxVol" type="range" min="0" max="100" value="70">
         </div>
 
-        <label class="lang-select" title="Language">
+        <label class="lang-select" title="Language" data-i18n-title="label.language">
           <span data-i18n="label.language">언어</span>
           <select id="langSelect">
             <option value="ko" data-i18n="lang.ko">한국어</option>
@@ -49,7 +49,7 @@
           </select>
         </label>
 
-        <button class="btn ghost" id="themeToggle" type="button">🌙 다크모드</button>
+        <button class="btn ghost" id="themeToggle" type="button" data-theme-toggle>🌙 다크모드</button>
         <a class="btn ghost" href="index.html" data-i18n="nav.backHome">← 메인으로</a>
       </div>
 </header>
@@ -123,6 +123,11 @@
       "Kimchi stew","Soybean paste stew","Soft tofu stew","Bulgogi","Spicy pork","Bibimbap","Samgyeopsal",
       "Tonkatsu","Fried chicken","Pizza","Burger","Ramen","Jjamppong","Jjajangmyeon","Malatang",
       "Sushi","Sashimi","Pasta","Salad","Tteokbokki","Gukbap","Seolleongtang","Kalguksu","Pho"
+    ],
+    ja: [
+      "キムチチゲ","テンジャンチゲ","スンドゥブチゲ","プルコギ","ジェユク炒め","ビビンバ","サムギョプサル",
+      "トンカツ","フライドチキン","ピザ","ハンバーガー","ラーメン","チャンポン","ジャージャー麺","マーラータン",
+      "寿司","刺身","パスタ","サラダ","トッポッキ","クッパ","ソルロンタン","カルグクス","フォー"
     ]
   };
   let currentMenuIndex = null;

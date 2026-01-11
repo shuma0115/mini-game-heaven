@@ -29,7 +29,7 @@ function renderPlaceholders() {
     div.className = "lotto-set";
     div.innerHTML = `
       <div class="lotto-set-title">
-        <span>SET ${setIdx + 1}</span>
+        <span>${t("lotto.set")} ${setIdx + 1}</span>
         <span class="lotto-badge" id="lotto-badge-${setIdx}" data-state="wait">${t("lotto.badge.wait")}</span>
       </div>
       <div class="lotto-balls" id="lotto-balls-${setIdx}">
@@ -48,7 +48,7 @@ function renderResultSets(result) {
     div.className = "lotto-set";
     div.innerHTML = `
       <div class="lotto-set-title">
-        <span>SET ${setIdx + 1}</span>
+        <span>${t("lotto.set")} ${setIdx + 1}</span>
         <span class="lotto-badge" id="lotto-badge-${setIdx}" data-state="done">${t("lotto.badge.done")}</span>
       </div>
       <div class="lotto-balls" id="lotto-balls-${setIdx}">
@@ -98,7 +98,7 @@ function formatTime(ts) {
   return new Date(ts).toLocaleString(locale);
 }
 function formatFiveSetsForCopy(fiveSets) {
-  return fiveSets.map((set, i) => `SET ${i + 1}: ${set.join(", ")}`).join("\n");
+  return fiveSets.map((set, i) => `${t("lotto.set")} ${i + 1}: ${set.join(", ")}`).join("\n");
 }
 
 async function runDrawSequence() {
@@ -270,7 +270,7 @@ function renderHistory() {
       <div class="lotto-history-sets">
         ${item.sets.map((set, i) => `
           <div class="lotto-mini-set">
-            <div class="label">SET ${i + 1}</div>
+            <div class="label">${t("lotto.set")} ${i + 1}</div>
             <div class="lotto-mini-balls">
               ${set.map(n => `<div class="lotto-mini-ball">${n}</div>`).join("")}
             </div>
