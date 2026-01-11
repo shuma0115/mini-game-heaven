@@ -37,6 +37,7 @@ let aiBusy = false;
 let alertTimer = null;
 let userColor = BLACK;
 let aiColor = WHITE;
+let nextUserColor = null;
 
 let omokDrawQueued = false;
 function scheduleOmokDraw(force=false){
@@ -58,6 +59,11 @@ if(window.ResizeObserver){
 }
 
 function newBoard(){
+  if(nextUserColor !== null){
+    userColor = nextUserColor;
+    aiColor = (userColor === BLACK) ? WHITE : BLACK;
+    nextUserColor = null;
+  }
   board = Array.from({length: SIZE}, () => Array.from({length: SIZE}, () => EMPTY));
   turn = BLACK;
   moves = [];
@@ -352,11 +358,9 @@ async function endGame(winPlayer){
   if(winPlayer === userColor){ try{ sfxWinFanfare(); }catch{} }
   if(winPlayer === aiColor){ try{ sfxLoseSad(); }catch{} }
   if(winPlayer === userColor){
-    userColor = WHITE;
-    aiColor = BLACK;
+    nextUserColor = WHITE;
   }else if(winPlayer === aiColor){
-    userColor = BLACK;
-    aiColor = WHITE;
+    nextUserColor = BLACK;
   }
 }
 
