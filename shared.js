@@ -869,7 +869,7 @@ function applyLanguage(lang){
     const key = el.dataset.i18nAria;
     if(dict[key]) el.setAttribute("aria-label", dict[key]);
   });
-  document.querySelectorAll("meta[name=\"description\"][data-i18n]").forEach(el => {
+  document.querySelectorAll("meta[data-i18n]").forEach(el => {
     const key = el.dataset.i18n;
     if(dict[key]) el.setAttribute("content", dict[key]);
   });
