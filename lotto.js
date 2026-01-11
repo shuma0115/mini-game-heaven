@@ -30,7 +30,7 @@ function renderPlaceholders() {
     div.innerHTML = `
       <div class="lotto-set-title">
         <span>SET ${setIdx + 1}</span>
-        <span class="lotto-badge" id="lotto-badge-${setIdx}">${t("lotto.badge.wait")}</span>
+        <span class="lotto-badge" id="lotto-badge-${setIdx}" data-state="wait">${t("lotto.badge.wait")}</span>
       </div>
       <div class="lotto-balls" id="lotto-balls-${setIdx}">
         ${Array.from({length: 6}).map((_, nIdx) => `
@@ -41,9 +41,11 @@ function renderPlaceholders() {
     lottoSetsEl.appendChild(div);
   }
 }
-function setBadge(setIdx, text) {
+function setBadge(setIdx, state) {
   const el = document.getElementById(`lotto-badge-${setIdx}`);
-  if (el) el.textContent = text;
+  if (!el) return;
+  el.dataset.state = state;
+  el.textContent = t(`lotto.badge.${state}`);
 }
 function revealBall(setIdx, numIdx, value) {
   const el = document.getElementById(`lotto-ball-${setIdx}-${numIdx}`);
@@ -88,7 +90,7 @@ async function runDrawSequence() {
   const rolling = startRollingSound(rollingSec, 0.34);
 
   for (let s = 0; s < 5; s++) {
-    setBadge(s, t("lotto.badge.drawing"));
+    setBadge(s, "drawing");
     await sleep(180);
 
     for (let n = 0; n < 6; n++) {
@@ -96,7 +98,7 @@ async function runDrawSequence() {
       revealBall(s, n, result[s][n]);
       await sleep(perNumberMs);
     }
-    setBadge(s, t("lotto.badge.done"));
+    setBadge(s, "done");
     if (s < 4) await sleep(perSetGapMs);
   }
 
@@ -285,6 +287,12 @@ function renderHistory() {
 renderPlaceholders();
 
 window.addEventListener("langchange", () => {
+  for (let s = 0; s < 5; s++) {
+    const badge = document.getElementById(`lotto-badge-${s}`);
+    if (!badge) continue;
+    const state = badge.dataset.state || "wait";
+    badge.textContent = t(`lotto.badge.${state}`);
+  }
   renderHistory();
   if (lottoIsDrawing) return;
   if (!lottoLastResult.length) {
