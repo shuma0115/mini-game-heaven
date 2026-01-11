@@ -30,13 +30,6 @@ function syncRpsLabels(){
   rpsMap.paper.label = t('rps.choice.paper');
 }
 
-window.addEventListener("langchange", () => {
-  syncRpsLabels();
-  renderRps();
-  if(myChoiceEl.textContent === '—' && cpuChoiceEl.textContent === '—'){
-    rpsResultEl.textContent = t('rps.result.prompt');
-  }
-});
 const beats = { scissors: 'paper', rock: 'scissors', paper: 'rock' };
 
 const myChoiceEl = document.getElementById('myChoice');
@@ -49,6 +42,33 @@ const histList = document.getElementById('histList');
 const rpsButtons = [...document.querySelectorAll('[data-rps]')];
 
 let rpsBusy = false;
+
+function renderRpsResult(){
+  const state = rpsResultEl.dataset.state || "prompt";
+  if(state === "wait"){
+    rpsResultEl.textContent = t('rps.result.wait');
+    return;
+  }
+  if(state === "win"){
+    rpsResultEl.textContent = t('rps.result.win');
+    return;
+  }
+  if(state === "draw"){
+    rpsResultEl.textContent = t('rps.result.draw');
+    return;
+  }
+  if(state === "lose"){
+    rpsResultEl.textContent = t('rps.result.lose');
+    return;
+  }
+  rpsResultEl.textContent = t('rps.result.prompt');
+}
+
+window.addEventListener("langchange", () => {
+  syncRpsLabels();
+  renderRps();
+  renderRpsResult();
+});
 
 function parseHistoryLine(line){
   const match = line.match(/^\[(.+?)\]\s*([^:]+):\s*(.+?)\s*\/\s*([^:]+):\s*(.+?)\s*→\s*(.+)$/);
@@ -147,7 +167,8 @@ async function playRps(me){
 
   rpsButtons.forEach(b => b.disabled = true);
   rpsResultEl.className = 'result';
-  rpsResultEl.textContent = t('rps.result.wait');
+  rpsResultEl.dataset.state = "wait";
+  renderRpsResult();
 
   myChoiceEl.textContent = rpsMap[me].emoji;
 
@@ -181,7 +202,8 @@ async function playRps(me){
 
   const outcome = judge(me, cpu);
   rpsResultEl.className = 'result ' + outcome;
-  rpsResultEl.textContent = outcome === 'win' ? t('rps.result.win') : outcome === 'draw' ? t('rps.result.draw') : t('rps.result.lose');
+  rpsResultEl.dataset.state = outcome;
+  renderRpsResult();
 
   if(outcome === 'win') { try{ sfxWinFanfare(); }catch{} }
   if(outcome === 'lose'){ try{ sfxLoseSad(); }catch{} }
@@ -209,7 +231,8 @@ function resetRps(){
   myChoiceEl.textContent = '—';
   cpuChoiceEl.textContent = '—';
   rpsResultEl.className = 'result';
-  rpsResultEl.textContent = t('rps.result.prompt');
+  rpsResultEl.dataset.state = "prompt";
+  renderRpsResult();
   renderRps();
 }
 
@@ -221,4 +244,8 @@ window.addEventListener('keydown', (e) => {
   if(key === 'r'){ e.preventDefault(); resetRps(); }
 });
 
+if(!rpsResultEl.dataset.state){
+  rpsResultEl.dataset.state = "prompt";
+}
+renderRpsResult();
 renderRps();

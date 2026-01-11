@@ -119,8 +119,13 @@ function showOmokAlert(message){
 window.addEventListener("langchange", () => {
   renderTurn();
   renderMoves();
-  if (gameOver && winner === EMPTY) {
-    omokStatus.textContent = t("omok.status.draw");
+  if (gameOver) {
+    if (winner === EMPTY) {
+      omokStatus.textContent = t("omok.status.draw");
+    } else {
+      omokStatus.textContent = t("omok.status.over");
+    }
+    scheduleOmokDraw(true);
   }
 });
 function drawOmok(_force=false){
