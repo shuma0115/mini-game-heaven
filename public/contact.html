@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta name="google-adsense-account" content="ca-pub-9568448756022999">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9568448756022999"
+     crossorigin="anonymous"></script>
+<script>
+  (function(){
+    try{
+      var lang = localStorage.getItem("lang");
+      if(lang){
+        document.documentElement.setAttribute("data-lang", lang);
+        document.documentElement.setAttribute("lang", lang);
+      }
+    }catch(e){}
+  })();
+</script>
+  <meta charset="utf-8" />
+<meta name="google-site-verification" content="O6RGGIJJ0AAZg7LRBwtfth8OiwKDQdc-UzdxoSf6BJM" />
+<meta name="naver-site-verification" content="13bcf9ed471df9d66f8b4e35c2d4fa02663ba20a" />
+<script>
+  (function(){
+    try{
+      var theme = localStorage.getItem("theme");
+      if(theme === "dark" || theme === "light"){
+        document.documentElement.setAttribute("data-theme", theme);
+      }
+    }catch(e){}
+  })();
+</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="canonical" href="https://minigame-heaven.pages.dev/contact.html">
+  <meta name="robots" content="index,follow">
+    <meta property="og:type" content="website">
+  <meta property="og:site_name" data-i18n="site.name" content="미니게임 천국">
+  <meta property="og:title" data-i18n="title.contact" content="미니게임 천국 | 문의">
+  <meta property="og:description" data-i18n="meta.contact" content="미니게임 천국 문의와 피드백 안내 페이지입니다.">
+  <meta property="og:url" content="https://minigame-heaven.pages.dev/contact.html">
+  <meta name="description" data-i18n="meta.contact" content="미니게임 천국 문의와 피드백 안내 페이지입니다.">
+  <title data-i18n="title.contact">미니게임 천국 | 문의</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="title" data-i18n="site.name">미니게임 천국</div>
+        <div class="sub" data-i18n="route.contact">문의 및 피드백</div>
+      </div>
+
+      <div class="top-controls">
+        <div class="pill"><span data-i18n="label.current">현재:</span> <b id="routeName">문의</b></div>
+        <a class="btn ghost" href="index.html" data-i18n="nav.backHome">← 메인으로</a>
+        <label class="lang-select" title="Language" data-i18n-title="label.language">
+          <span data-i18n="label.language">언어</span>
+          <select id="langSelect">
+            <option value="ko" data-i18n="lang.ko">한국어</option>
+            <option value="en" data-i18n="lang.en">English</option>
+            <option value="ja" data-i18n="lang.ja">日本語</option>
+          </select>
+        </label>
+        <button class="btn ghost" id="themeToggle" type="button" data-theme-toggle>🌙 다크모드</button>
+      </div>
+    </header>
+
+    <section aria-label="문의" data-i18n-aria="aria.contact">
+      <div class="card">
+        <div class="hd">
+          <div>
+            <h2 data-i18n="contact.title">문의하기</h2>
+            <p data-i18n="contact.desc">오류 제보, 개선 요청, 제휴 문의를 환영합니다.</p>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="panel">
+            <div style="font-weight:800; margin-bottom:6px;" data-i18n="contact.info.title">연락처</div>
+            <ul class="info-list">
+              <li data-i18n="contact.info.li1">이메일: shuma0115@gmail.com</li>
+              <li data-i18n="contact.info.li2">가능하면 사용 중인 브라우저와 페이지명을 함께 알려주세요.</li>
+            </ul>
+
+            <div class="hr"></div>
+
+            <div style="font-weight:800; margin-bottom:6px;" data-i18n="contact.response.title">응답 안내</div>
+            <ul class="info-list">
+              <li data-i18n="contact.response.li1">평일 기준 1~3일 내 답변을 목표로 합니다.</li>
+              <li data-i18n="contact.response.li2">접수된 피드백은 순차적으로 반영됩니다.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="footer-links">
+        <a href="index.html" data-i18n="nav.home">홈</a>
+        <a href="about.html" data-i18n="nav.about">사이트 소개</a>
+        <a href="contact.html" data-i18n="nav.contact">문의</a>
+        <a href="privacy.html" data-i18n="nav.privacy">개인정보처리방침</a>
+        <a href="terms.html" data-i18n="nav.terms">이용약관</a>
+      </div>
+      <div class="footer-meta" data-i18n="footer.copyright">© Mini Game Heaven</div>
+    </footer>
+  </div>
+
+  <script src="shared.js"></script>
+  <script>
+    initHeader("route.contact");
+  </script>
+</body>
+</html>
