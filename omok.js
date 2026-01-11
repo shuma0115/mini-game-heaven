@@ -35,6 +35,8 @@ let winner = EMPTY;
 let lastMove = null;
 let aiBusy = false;
 let alertTimer = null;
+let userColor = BLACK;
+let aiColor = WHITE;
 
 let omokDrawQueued = false;
 function scheduleOmokDraw(force=false){
@@ -67,12 +69,16 @@ function newBoard(){
   renderTurn();
   renderMoves();
   scheduleOmokDraw(true);
+  if(turn === aiColor){
+    setTimeout(() => { aiTurn(); }, 120);
+  }
 }
 
 function renderTurn(){
-  const isUserTurn = turn === BLACK;
-  turnDot.className = 'turn-dot ' + (isUserTurn ? 'black' : 'white');
-  turnText.textContent = isUserTurn ? t("omok.turn.user") : t("omok.turn.ai");
+  const isUserTurn = turn === userColor;
+  const colorLabel = turn === BLACK ? t("omok.color.black") : t("omok.color.white");
+  turnDot.className = 'turn-dot ' + (turn === BLACK ? 'black' : 'white');
+  turnText.textContent = isUserTurn ? t("omok.turn.user", { color: colorLabel }) : t("omok.turn.ai", { color: colorLabel });
 }
 
 function renderMoves(){
@@ -85,7 +91,8 @@ function renderMoves(){
   }
   moves.forEach((m, idx) => {
     const li = document.createElement('li');
-    const p = m.player === BLACK ? t("omok.player.black") : t("omok.player.white");
+    const colorLabel = m.player === BLACK ? t("omok.color.black") : t("omok.color.white");
+    const p = m.player === userColor ? t("omok.player.user", { color: colorLabel }) : t("omok.player.ai", { color: colorLabel });
     const col = String.fromCharCode('A'.charCodeAt(0) + m.x);
     const row = (m.y + 1);
     li.textContent = `${idx+1}. ${p} — ${col}${row}`;
@@ -208,7 +215,7 @@ function drawOmok(_force=false){
     ctx.font = `900 ${Math.floor(canvas.width*0.055)}px ui-sans-serif, system-ui`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const msg = winner === BLACK ? t("omok.win.user") : t("omok.win.ai");
+    const msg = winner === userColor ? t("omok.win.user") : t("omok.win.ai");
     ctx.fillText(msg, canvas.width/2, canvas.height/2);
     ctx.restore();
   }
@@ -342,8 +349,15 @@ async function endGame(winPlayer){
   winner = winPlayer;
   omokStatus.textContent = t("omok.status.over");
   scheduleOmokDraw();
-  if(winPlayer === BLACK){ try{ sfxWinFanfare(); }catch{} }
-  if(winPlayer === WHITE){ try{ sfxLoseSad(); }catch{} }
+  if(winPlayer === userColor){ try{ sfxWinFanfare(); }catch{} }
+  if(winPlayer === aiColor){ try{ sfxLoseSad(); }catch{} }
+  if(winPlayer === userColor){
+    userColor = WHITE;
+    aiColor = BLACK;
+  }else if(winPlayer === aiColor){
+    userColor = BLACK;
+    aiColor = WHITE;
+  }
 }
 
 function placeStoneCore(x,y,player, playSfx=true){
@@ -439,8 +453,8 @@ function candidateCellsByRadius(radius){
 }
 
 function findBestMoveAI(){
-  const me = WHITE;
-  const opp = BLACK;
+  const me = aiColor;
+  const opp = userColor;
   const {noise, radius, wAttack, wDefend} = getAiParams();
 
   const cand = candidateCellsByRadius(radius);
@@ -469,7 +483,7 @@ function findBestMoveAI(){
 async function aiTurn(){
   if(gameOver) return;
   aiBusy = true;
-  turn = WHITE;
+  turn = aiColor;
   renderTurn();
 
   await ensureAudio();
@@ -477,15 +491,35 @@ async function aiTurn(){
   const {thinkDelay} = getAiParams();
   await new Promise(r => setTimeout(r, thinkDelay));
 
-  const move = findBestMoveAI();
+  let move = findBestMoveAI();
   if(!move){
     aiBusy = false;
     return;
   }
-  placeStoneCore(move.x, move.y, WHITE, true);
+  if (aiColor === BLACK) {
+    const rj = renjuJudgeBlackMove(move.x, move.y);
+    if (rj.forbidden) {
+      let found = null;
+      const cand = candidateCellsByRadius(getAiParams().radius);
+      for (const c of cand) {
+        if (!renjuJudgeBlackMove(c.x, c.y).forbidden) { found = c; break; }
+      }
+      if (!found) {
+        for (let y = 0; y < SIZE; y++) {
+          for (let x = 0; x < SIZE; x++) {
+            if (board[y][x] !== EMPTY) continue;
+            if (!renjuJudgeBlackMove(x, y).forbidden) { found = { x, y }; break; }
+          }
+          if (found) break;
+        }
+      }
+      if (found) move = found;
+    }
+  }
+  placeStoneCore(move.x, move.y, aiColor, true);
 
-  if(checkWinFrom(move.x, move.y, WHITE)){
-    await endGame(WHITE);
+  if(checkWinFrom(move.x, move.y, aiColor)){
+    await endGame(aiColor);
     aiBusy = false;
     return;
   }
@@ -497,7 +531,7 @@ async function aiTurn(){
     return;
   }
 
-  turn = BLACK;
+  turn = userColor;
   renderTurn();
   aiBusy = false;
 }
@@ -505,31 +539,34 @@ async function aiTurn(){
 async function userPlace(x,y){
   if(gameOver) return;
   if(aiBusy) return;
-  if(turn !== BLACK) return;
+  if(turn !== userColor) return;
 
   // RENJU: 흑 금수(33/44/장목) 판정
-  const rj = renjuJudgeBlackMove(x, y);
-  if(rj.forbidden){
-    const reasonMap = {
-      "범위 밖": "omok.reason.outside",
-      "이미 돌이 있음": "omok.reason.occupied",
-      "장목(6목 이상)": "omok.reason.overline",
-      "44(사사)": "omok.reason.doubleFour",
-      "33(삼삼)": "omok.reason.doubleThree"
-    };
-    const reasonKey = reasonMap[rj.reason] || rj.reason;
-    const reasonText = reasonKey.startsWith("omok.reason.") ? t(reasonKey) : reasonKey;
-    omokStatus.textContent = "";
-    showOmokAlert(t("omok.status.forbidden", { reason: reasonText }));
-    setTimeout(() => { if(!gameOver) omokStatus.textContent = ""; }, 900);
-    return;
+  let rj = null;
+  if (userColor === BLACK) {
+    rj = renjuJudgeBlackMove(x, y);
+    if(rj.forbidden){
+      const reasonMap = {
+        "범위 밖": "omok.reason.outside",
+        "이미 돌이 있음": "omok.reason.occupied",
+        "장목(6목 이상)": "omok.reason.overline",
+        "44(사사)": "omok.reason.doubleFour",
+        "33(삼삼)": "omok.reason.doubleThree"
+      };
+      const reasonKey = reasonMap[rj.reason] || rj.reason;
+      const reasonText = reasonKey.startsWith("omok.reason.") ? t(reasonKey) : reasonKey;
+      omokStatus.textContent = "";
+      showOmokAlert(t("omok.status.forbidden", { reason: reasonText }));
+      setTimeout(() => { if(!gameOver) omokStatus.textContent = ""; }, 900);
+      return;
+    }
   }
 
-  const ok = placeStoneCore(x,y,BLACK,true);
+  const ok = placeStoneCore(x,y,userColor,true);
   if(!ok) return;
 
-  if(rj.winExact5){
-    await endGame(BLACK);
+  if(checkWinFrom(x, y, userColor)){
+    await endGame(userColor);
     return;
   }
 
@@ -559,7 +596,7 @@ function undo(){
 
   if(moves.length){
     const last = moves[moves.length-1];
-    if(last.player === WHITE){
+    if(last.player === aiColor){
       popOne();
       if(moves.length) popOne();
     }else{
@@ -568,7 +605,12 @@ function undo(){
   }
 
   lastMove = moves.length ? {x:moves[moves.length-1].x, y:moves[moves.length-1].y} : null;
-  turn = BLACK;
+  if(moves.length === 0){
+    turn = BLACK;
+  }else{
+    const last = moves[moves.length-1];
+    turn = last.player === BLACK ? WHITE : BLACK;
+  }
   renderTurn();
   renderMoves();
   scheduleOmokDraw();
