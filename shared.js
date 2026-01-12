@@ -978,8 +978,33 @@ function applyLanguage(lang){
   const label = theme === "dark" ? t("button.lightMode") : t("button.darkMode");
   document.querySelectorAll("[data-theme-toggle]").forEach(btn => btn.textContent = label);
 
+  updateStructuredData();
+
   htmlEl.classList.remove("lang-loading");
   window.dispatchEvent(new CustomEvent("langchange", { detail: CURRENT_LANG }));
+}
+
+function updateStructuredData(){
+  const script = document.getElementById("structuredData");
+  if(!script) return;
+  const titleEl = document.querySelector("title");
+  const descEl = document.querySelector('meta[name="description"]');
+  const urlEl = document.querySelector('link[rel="canonical"]');
+  const lang = document.documentElement.getAttribute("lang") || "ko";
+  const inLanguage = lang === "en" ? "en" : lang === "ja" ? "ja" : "ko";
+  const ogLocale = document.querySelector('meta[property="og:locale"]');
+  if(ogLocale){
+    ogLocale.setAttribute("content", lang === "en" ? "en_US" : lang === "ja" ? "ja_JP" : "ko_KR");
+  }
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: titleEl ? titleEl.textContent : "",
+    description: descEl ? (descEl.getAttribute("content") || "") : "",
+    url: urlEl ? (urlEl.getAttribute("href") || "") : "",
+    inLanguage
+  };
+  script.textContent = JSON.stringify(data, null, 2);
 }
 
 function applyTheme(theme){
