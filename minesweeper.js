@@ -53,11 +53,13 @@ function buildCell(r, c) {
 function buildBoard() {
   boardEl.style.setProperty("--ms-cols", String(cols));
   boardEl.innerHTML = "";
+  const frag = document.createDocumentFragment();
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      boardEl.appendChild(buildCell(r, c));
+      frag.appendChild(buildCell(r, c));
     }
   }
+  boardEl.appendChild(frag);
 }
 
 function createGrid() {

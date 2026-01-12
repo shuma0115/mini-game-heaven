@@ -183,13 +183,12 @@
   }
 
   function schedulePreload(){
+    if ("requestIdleCallback" in window) {
+      requestIdleCallback(preloadMenuImages, { timeout: 2000 });
+      return;
+    }
     setTimeout(preloadMenuImages, 0);
   }
-
-  // shared.js에서 제공하는 전역 함수/변수 사용:
-  // - getAudioCtx(), ensureAudio(), vol()
-  // - SFX_ENABLED / SFX_VOL은 shared.js에서 관리됨
-  // (중복 선언하면 스크립트가 멈출 수 있음)
 
   function sfxShuffleStart(){
     const ctx = getAudioCtx(); if(!ctx) return;
