@@ -1,6 +1,5 @@
 initHeader("route.lotto");
 
-const lottoSetsEl = document.getElementById("lottoSets");
 const lottoBtnPick = document.getElementById("lottoBtnPick");
 const lottoBtnCopy = document.getElementById("lottoBtnCopy");
 const lottoBtnReset = document.getElementById("lottoBtnReset");
@@ -15,6 +14,10 @@ let lottoLastResult = [];
 let lottoIsDrawing = false;
 let lottoLastCreatedAt = 0;
 
+function getLottoSetsEl() {
+  return document.getElementById("lottoSets");
+}
+
 function pickOneSet() {
   const s = new Set();
   while (s.size < 6) s.add(Math.floor(Math.random() * 45) + 1);
@@ -23,7 +26,9 @@ function pickOneSet() {
 function generateFiveSets() { return Array.from({ length: 5 }, pickOneSet); }
 
 function renderPlaceholders() {
-  lottoSetsEl.innerHTML = "";
+  const container = getLottoSetsEl();
+  if (!container) return;
+  container.innerHTML = "";
   for (let setIdx = 0; setIdx < 5; setIdx++) {
     const div = document.createElement("div");
     div.className = "lotto-set";
@@ -38,11 +43,13 @@ function renderPlaceholders() {
         `).join("")}
       </div>
     `;
-    lottoSetsEl.appendChild(div);
+    container.appendChild(div);
   }
 }
 function renderResultSets(result) {
-  lottoSetsEl.innerHTML = "";
+  const container = getLottoSetsEl();
+  if (!container) return;
+  container.innerHTML = "";
   result.forEach((set, setIdx) => {
     const div = document.createElement("div");
     div.className = "lotto-set";
@@ -57,7 +64,7 @@ function renderResultSets(result) {
         `).join("")}
       </div>
     `;
-    lottoSetsEl.appendChild(div);
+    container.appendChild(div);
   });
 }
 function setBadge(setIdx, state) {
@@ -177,7 +184,7 @@ lottoBtnCopy.addEventListener("click", async () => {
 
 lottoBtnReset.addEventListener("click", () => {
   if (lottoIsDrawing) return;
-  lottoSetsEl.innerHTML = "";
+  renderPlaceholders();
   lottoLastResult = [];
   lottoLastCreatedAt = 0;
   lottoBtnCopy.disabled = true;
