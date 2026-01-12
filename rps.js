@@ -13,7 +13,10 @@ const CHOICE_KEY_BY_LABEL = {
   "보": "paper",
   "Scissors": "scissors",
   "Rock": "rock",
-  "Paper": "paper"
+  "Paper": "paper",
+  "チョキ": "scissors",
+  "グー": "rock",
+  "パー": "paper"
 };
 const OUTCOME_KEY_BY_LABEL = {
   "승": "win",
@@ -21,7 +24,10 @@ const OUTCOME_KEY_BY_LABEL = {
   "패": "lose",
   "W": "win",
   "D": "draw",
-  "L": "lose"
+  "L": "lose",
+  "勝": "win",
+  "引": "draw",
+  "負": "lose"
 };
 
 function syncRpsLabels(){

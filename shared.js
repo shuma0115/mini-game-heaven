@@ -1489,7 +1489,13 @@ function cryptoRandomId() {
 }
 
 window.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    window.location.href = "index.html";
+  if (e.key !== "Escape") return;
+  const target = e.target;
+  if (target && target.closest) {
+    const editable = target.closest("input, textarea, select, [contenteditable='true']");
+    if (editable) return;
   }
+  const current = window.location.pathname.split("/").pop();
+  if (!current || current === "index.html") return;
+  window.location.href = "index.html";
 });
