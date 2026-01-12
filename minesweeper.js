@@ -13,6 +13,9 @@ const LEVELS = {
   normal: { rows: 10, cols: 10, mines: 18 },
   hard: { rows: 12, cols: 14, mines: 28 }
 };
+const DEFAULT_LEVEL = "easy";
+const MS_LEVEL_KEY = "minesweeper_level_v1";
+const MS_LEVEL_SET_KEY = "minesweeper_level_set_v1";
 
 let rows = 0;
 let cols = 0;
@@ -124,7 +127,7 @@ function stopTimer() {
 }
 
 function resetGame() {
-  const level = LEVELS[levelEl.value] || LEVELS.normal;
+  const level = LEVELS[levelEl.value] || LEVELS.easy;
   rows = level.rows;
   cols = level.cols;
   mines = level.mines;
@@ -263,8 +266,30 @@ function toggleFlag(r, c) {
   try{ sfxMsFlag(); }catch{}
 }
 
+function applyMinesweeperLevelDefault(){
+  const savedLevel = localStorage.getItem(MS_LEVEL_KEY);
+  const levelSet = localStorage.getItem(MS_LEVEL_SET_KEY) === "1";
+  if (levelSet && savedLevel && LEVELS[savedLevel]) {
+    levelEl.value = savedLevel;
+  } else {
+    levelEl.value = DEFAULT_LEVEL;
+  }
+}
+applyMinesweeperLevelDefault();
+
 resetBtn.addEventListener("click", resetGame);
-levelEl.addEventListener("change", resetGame);
+levelEl.addEventListener("change", () => {
+  localStorage.setItem(MS_LEVEL_KEY, levelEl.value);
+  localStorage.setItem(MS_LEVEL_SET_KEY, "1");
+  resetGame();
+});
+
+window.addEventListener("pageshow", () => {
+  if(localStorage.getItem(MS_LEVEL_SET_KEY) !== "1"){
+    applyMinesweeperLevelDefault();
+    resetGame();
+  }
+});
 
 window.addEventListener("langchange", () => {
   const levelLabel = levelEl.value;

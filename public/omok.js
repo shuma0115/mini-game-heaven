@@ -1,6 +1,8 @@
 initHeader("route.omok");
 
-const OMOK_LEVEL_KEY = "omok_ai_level_v1";
+const OMOK_LEVEL_KEY = "omok_ai_level_v2";
+const OMOK_LEVEL_SET_KEY = "omok_ai_level_set_v1";
+const DEFAULT_OMOK_LEVEL = "easy";
 
 const SIZE = 15;
 const EMPTY = 0, BLACK = 1, WHITE = 2;
@@ -16,15 +18,28 @@ const omokAlert = document.getElementById('omokAlert');
 const moveList = document.getElementById('moveList');
 const aiLevelEl = document.getElementById('aiLevel');
 
-const savedLevel = localStorage.getItem(OMOK_LEVEL_KEY);
-if(savedLevel && ["easy","normal","hard"].includes(savedLevel)){
-  aiLevelEl.value = savedLevel;
+function applyOmokLevelDefault(){
+  const savedLevel = localStorage.getItem(OMOK_LEVEL_KEY);
+  const levelSet = localStorage.getItem(OMOK_LEVEL_SET_KEY) === "1";
+  if(levelSet && savedLevel && ["easy","normal","hard"].includes(savedLevel)){
+    aiLevelEl.value = savedLevel;
+  }else{
+    aiLevelEl.value = DEFAULT_OMOK_LEVEL;
+  }
 }
+applyOmokLevelDefault();
 aiLevelEl.addEventListener("change", () => {
   localStorage.setItem(OMOK_LEVEL_KEY, aiLevelEl.value);
+  localStorage.setItem(OMOK_LEVEL_SET_KEY, "1");
   const levelLabel = aiLevelEl.value === "easy" ? t("omok.level.easy") : aiLevelEl.value === "normal" ? t("omok.level.normal") : t("omok.level.hard");
   omokStatus.textContent = `${t("omok.level")} ${levelLabel}`;
   setTimeout(() => { if(!gameOver) omokStatus.textContent = ""; }, 900);
+});
+
+window.addEventListener("pageshow", () => {
+  if(localStorage.getItem(OMOK_LEVEL_SET_KEY) !== "1"){
+    applyOmokLevelDefault();
+  }
 });
 
 let board = [];

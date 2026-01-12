@@ -1,4 +1,5 @@
 const THEME_KEY = "theme";
+const THEME_SET_KEY = "theme_set_v1";
 const SFX_ON_KEY = "mini_sfx_on_v1";
 const SFX_VOL_KEY = "mini_sfx_vol_v1";
 const LANG_KEY = "lang";
@@ -990,6 +991,7 @@ function applyTheme(theme){
 function toggleTheme(){
   const current = htmlEl.getAttribute("data-theme") || "light";
   applyTheme(current === "dark" ? "light" : "dark");
+  localStorage.setItem(THEME_SET_KEY, "1");
 }
 
 function initHeader(routeKey){
@@ -1004,8 +1006,10 @@ function initHeader(routeKey){
     themeBtn.setAttribute("data-theme-toggle","1");
     themeBtn.addEventListener("click", toggleTheme);
   }
-  const savedTheme = localStorage.getItem(THEME_KEY) || "light";
-  applyTheme(savedTheme);
+  const savedTheme = localStorage.getItem(THEME_KEY);
+  const themeSet = localStorage.getItem(THEME_SET_KEY) === "1";
+  const initialTheme = themeSet && (savedTheme === "dark" || savedTheme === "light") ? savedTheme : "light";
+  applyTheme(initialTheme);
 
   const langSelect = document.getElementById("langSelect");
   if(langSelect){
